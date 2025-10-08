@@ -2,16 +2,18 @@ from cadastro import cadastrar_usuario, carregar_dados, redefinir_senha
 
 def tracinho():
     print('-'*40)
-
+    
 def menu_estudante():
-    print('Menu')
+    print('='*40)
+    print(f"{'MENU'}.' '^40")
+    print('='*40)
 
 def verifica_email(email): 
     dados = carregar_dados()   
     if not email in dados:
         print('Email inválido! Cadastre um novo usuário ou insira um email válido.')
+       
         while True:
-            tracinho()
             print('[1] Inserir um email válido')
             print('[2] Cadastrar um novo usuário')
             tracinho()
@@ -22,10 +24,12 @@ def verifica_email(email):
                 break
             elif escolha == 2:
                 cadastrar_usuario()
-                break                                             
+                break 
+            elif escolha == None:
+                print('Informe uma escolha válida')                                            
             else:
                 print('Opção inválida! Tente novamente!')
-                break
+            break
 
 def verifica_senha(email, senha):
     dados = carregar_dados()
@@ -44,26 +48,56 @@ def verifica_senha(email, senha):
             tracinho()
             redefinir_senha(email)
 
-
 def login():
     dados = carregar_dados()
-    email = str(input('Informe o email de login: '))
-    verifica_email(email)
+    tracinho()
+    print('[1] Login')
+    print('[2] Cadastrar novo usuário')
+    tracinho()
     while True:
-        print('[1] Informe a senha')
-        print('[2] Esqueceu a senha')
-        tracinho()
-        escolha = int(input('Esolha uma opção acima: '))
+        try:
+            escolha = int(input('Escolha uma opção: '))
+        except:
+            print('Informe uma escolha válida')
+        else:
+            break
+
+    while True:
         if escolha == 1:
-            senha = str(input('Informe a sua senha: '))
-            tracinho()
-            verifica_senha(email, senha)
+            email = str(input('Informe o email de login: '))
+            verifica_email(email)
+            while True:
+                tracinho()
+                print('[1] Informe a senha')
+                print('[2] Esqueceu a senha')
+                tracinho()
+                while True:
+                    try:
+                        escolha = int(input('Escolha uma opção: '))
+                    except:
+                        print('Informe uma escolha válida')
+                    else:
+                        break
+                escolha = int(input('Esolha uma opção acima: '))
+                if escolha == 1:
+                    senha = str(input('Informe a sua senha: '))
+                    tracinho()
+                    verifica_senha(email, senha)
+                    break
+                elif escolha == 2:
+                    tracinho()
+                    redefinir_senha(email)
+                    break
+                else:
+                    print('Opção inválida! Tente novamente!')
             break
         elif escolha == 2:
-            tracinho()
-            redefinir_senha(email)
-            break                                             
+            cadastrar_usuario()
+            break
         else:
             print('Opção inválida! Tente novamente!')
-        
 login()
+
+'''
+Pensar em uma forma de criar uma função pra testar o erro de campo vazio
+'''
