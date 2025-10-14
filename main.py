@@ -1,4 +1,5 @@
 from cadastro import cadastrar_usuario, carregar_dados, redefinir_senha
+import maskpass
 
 def tracinho():
     print('-'*40)
@@ -40,7 +41,7 @@ def verifica_senha(email, senha):
             break
         else:
             print('Senha incorreta, tente novamente!')
-            senha = str(input('Informe a sua senha: '))
+            senha = maskpass.askpass(prompt='Informe a sua senha: ')
             contador += 1
         if contador == 4:
             tracinho()
@@ -80,7 +81,7 @@ def login():
                         break
                 escolha = int(input('Esolha uma opção acima: '))
                 if escolha == 1:
-                    senha = str(input('Informe a sua senha: '))
+                    senha = maskpass.askpass(prompt='Informe a sua senha: ')
                     tracinho()
                     verifica_senha(email, senha)
                     break
