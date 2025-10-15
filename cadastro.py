@@ -2,6 +2,7 @@ import json
 import os
 import re
 import maskpass
+from util import tracinho
 
 def carregar_dados():
     if not os.path.exists('dados_usuarios.json'): # Em caso de não existir o arquivo, retorna um dicionário vazio
@@ -11,6 +12,7 @@ def carregar_dados():
     return dados
 
 def cadastrar_usuario():
+    tracinho()
     nome = str(input('Digite seu nome: '))
     email = str(input('Digite seu email: '))
     email = email_valido(email)
@@ -26,6 +28,7 @@ def cadastrar_usuario():
     dados_usuarios[email] = {'Nome': nome, 'Série da Criança': serie_crianca, 'Senha': senha} # O email cadastrado é a chave dos dados novos
     with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
         json.dump(dados_usuarios, arquivo, indent=4, ensure_ascii=False)
+    print ('\nUsuário cadastrado com sucesso!')
 
 def redefinir_senha(email):
     dados = carregar_dados()
