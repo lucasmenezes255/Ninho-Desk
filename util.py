@@ -1,7 +1,12 @@
 import os 
+from platform import system
 
 def limpar_tela():
-    os.system ('cls' if os.name=='nt' else 'clear')
+    if system == 'Windows':
+        os.system('cls')
+    else:
+        os.system('clear')
 
 def tracinho():
-    print('-'*60)
+    print('-'*40)
+
