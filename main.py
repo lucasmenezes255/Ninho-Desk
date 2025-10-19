@@ -1,5 +1,6 @@
 from cadastro import cadastrar_usuario, carregar_dados, redefinir_senha, email_valido, serie_valida
 from util import tracinho, limpar_tela
+from lembretes import ver_lembrete
 import maskpass
 from time import sleep
 import json
@@ -100,9 +101,13 @@ def menu_estudante(email):
         elif escolha_menu == '2':       #Aqui pra redirecionar para as respectivas funções quando estiverem prontas
             ver_cronograma()
         elif escolha_menu == '3':
-            ver_lembrete()
+            ver_lembrete(email)
         elif escolha_menu == '4':
-            print('FUNCIONALIDADE INDISPONÍVEL NO MOMENTO!')
+            limpar_tela()
+            print('FUNCIONALIDADE INDISPONÍVEL NO MOMENTO!\n\nVoltando ao menu')
+            for i in range(3):
+                print('.')
+                sleep(1)
         elif escolha_menu == '5':
             controle_pais()
         elif escolha_menu == '6':
@@ -114,7 +119,10 @@ def menu_estudante(email):
             for i in range(3):
                 print('.')
                 sleep(1)
+            limpar_tela()
+            login()
             break
+            
         else:
             tracinho()
             print ('Opção inválida! Tente novamente')
@@ -211,6 +219,8 @@ def login():
                     elif escolha == 2:
                         tracinho()
                         redefinir_senha(email)
+                        limpar_tela()
+                        login()
                         break
                     else:
                         print('Opção inválida! Tente novamente!')

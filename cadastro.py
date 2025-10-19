@@ -12,7 +12,6 @@ def carregar_dados():
         dados = json.load(arquivo)
     return dados
 
-
 def cadastrar_usuario():
     tracinho()
     while True:
@@ -65,10 +64,13 @@ def redefinir_senha(email):
             else:
                 break
     tracinho()
-    print('Senha redefinida com sucesso')
+    print('Senha redefinida com sucesso\n\nVoltando')
     dados[email]['Senha'] = nova_senha
     with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
         json.dump(dados, arquivo, indent=4, ensure_ascii=False)
+    for i in range(3):
+        print('.')
+        sleep(1)
 
 def email_valido(email):
     dados = carregar_dados()
