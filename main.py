@@ -186,6 +186,7 @@ def login():
     tracinho()
     print('[1] Login')
     print('[2] Cadastrar novo usuário')
+    print('[3] Sair')
     while True:
         try:
             tracinho()
@@ -228,6 +229,16 @@ def login():
             elif escolha == 2:
                 limpar_tela()
                 cadastrar_usuario()
+                break
+            elif escolha == 3:
+                limpar_tela()
+                tracinho()
+                print('Nos despedimos por aqui, até a próxima!')
+                sleep(1)
+                for i in range(3):
+                    print('.')
+                    sleep(1)
+                tracinho()
                 break
             else:
                 print('Opção inválida! Tente novamente!')

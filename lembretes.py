@@ -25,8 +25,20 @@ def add_lembretes(email):
     print('Lembrete adicionado com sucesso!')
 
 def lista_lembretes(email):
-    print('Deus te ama')
-
+    lembretes = carregar_lembretes()
+    if email not in lembretes or len(lembretes)==0:
+        limpar_tela()
+        tracinho()
+        print('Nenhum lembrete definido!')
+        tracinho()
+        input('Clique na tecla "Enter" para voltar')
+    elif len(lembretes) >= 1:
+        tracinho()
+        print('Seus lembretes:')
+        for i, lembrete in enumerate (lembretes[email], start=1):
+            print(f'\n {[i]} {lembrete['Título']}:\n{lembrete['Descrição']}')
+        tracinho()
+        input('Clique na tecla "Enter" para voltar')
 
 def ver_lembrete(email):
     while True:
