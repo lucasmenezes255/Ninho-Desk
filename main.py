@@ -1,8 +1,61 @@
-from cadastro import cadastrar_usuario, carregar_dados, redefinir_senha, email_valido, serie_valida
+from cadastro import cadastrar_usuario, carregar_dados, redefinir_senha, email_valido, serie_valida, redefinir_senha_master
 from util import tracinho, limpar_tela
 import maskpass
 from time import sleep
 import json
+from tarefas import administrar_tarefas
+from verificacoes import verifica_email, verifica_senha, verifica_senha_master
+
+def controle_pais(email, caminho):
+    dados = carregar_dados()
+    if caminho == 0:
+        while True:
+            limpar_tela()
+            print('='*40)
+            print(f'{"SENHA MESTRE":^40}')
+            print('='*40)
+            print('[1] Informe a senha\n'
+                  '[2] Esqueceu a senha\n')
+            tracinho()
+            escolha = str(input('Selecione uma opção: '))
+            tracinho()
+            if escolha == '1':
+                senha = maskpass.askpass(prompt='Informe a sua senha: ')
+                verifica_senha_master(email, senha)
+                break
+            elif escolha == '2':
+                redefinir_senha_master(email)
+    while True:
+        limpar_tela()
+        print('='*40)
+        print(f'{"CONTROLE DOS PAIS":^40}')
+        print('='*40)
+        print('[1] Administrar Tarefas\n'
+              '[2] Organizar Cronograma\n'
+              '[3] Criar Lembretes\n'
+              '[4] Voltar para o Menu\n')
+        tracinho()
+        escolha_menu = str(input('Selecione uma opção: \n'))
+        if escolha_menu == '1':
+            administrar_tarefas(email)
+            break
+        elif escolha_menu == '2':       #Aqui pra redirecionar para as respectivas funções quando estiverem prontas
+            organizar_cronograma()
+        elif escolha_menu == '3':
+            criar_lembrete()
+        elif escolha_menu == '4':
+            limpar_tela()
+            print('Voltando')
+            for i in range(3):
+                print('.')
+                sleep(1)
+            from main import menu_estudante
+            menu_estudante(email)
+            break
+        else:
+            tracinho()
+            print ('Opção inválida! Tente novamente')
+            sleep(1)
 
 def editar_perfil(email):    # Aqui o usuário pode alterar os dados do seu perfil
     while True:
@@ -14,7 +67,7 @@ def editar_perfil(email):    # Aqui o usuário pode alterar os dados do seu perf
         print('[1] Editar Email\n'
               '[2] Editar Nome de Usuário\n'
               '[3] Editar Senha\n'
-              '[4] Editar Série da Criança\n' \
+              '[4] Editar Série da Criança\n' 
               '[5] Voltar para o Menu do Estudante')
         tracinho()
         escolha_menu = str(input('Selecione uma opção: \n'))
@@ -93,18 +146,22 @@ def menu_estudante(email):
             '[6] Editar Perfil\n' \
             '[7] Sair')
         tracinho()
-
         escolha_menu = str(input('Selecione uma opção: \n'))
         if escolha_menu == '1':
             conferir_tarefas()
+            break
         elif escolha_menu == '2':       #Aqui pra redirecionar para as respectivas funções quando estiverem prontas
             ver_cronograma()
+            break
         elif escolha_menu == '3':
             ver_lembrete()
+            break
         elif escolha_menu == '4':
             print('FUNCIONALIDADE INDISPONÍVEL NO MOMENTO!')
+            sleep(2)
         elif escolha_menu == '5':
-            controle_pais()
+            controle_pais(email, 0)
+            break
         elif escolha_menu == '6':
             editar_perfil(email)
             break
@@ -114,70 +171,23 @@ def menu_estudante(email):
             for i in range(3):
                 print('.')
                 sleep(1)
+            limpar_tela()
+            login()
             break
         else:
             tracinho()
             print ('Opção inválida! Tente novamente')
             sleep(1)
     
-def verifica_email(email): 
-    limpar_tela()
-    dados = carregar_dados()   
-    if not email in dados:
-        print('\nEmail inválido! Cadastre um novo usuário ou insira um email válido.\n')
-        while True:
-            print('[1] Inserir um email válido')
-            print('[2] Cadastrar um novo usuário')
-            tracinho()
-            escolha = str(input('Escolha uma opção acima: '))
-            if  escolha == '1':
-                tracinho()
-                email = str(input('Insira um email válido: '))
-                verifica_email(email)
-                break
-
-            elif escolha == '2':
-                cadastrar_usuario()
-                break
-
-            elif escolha == None:
-                limpar_tela()
-                print('Informe uma escolha válida') 
-                tracinho()  
-                                                         
-            else:
-                limpar_tela()
-                print('Opção inválida! Tente novamente!')
-                tracinho()
-            
-
-def verifica_senha(email, senha):
-    limpar_tela()
-    dados = carregar_dados()
-    contador = 0
-    while contador < 5:
-        if dados[email]['Senha'] == senha:
-            menu_estudante(email)
-            break
-        else:
-            limpar_tela()
-            print('Senha incorreta, tente novamente!')
-            senha = maskpass.askpass(prompt='Informe a sua senha: ')
-            contador += 1
-        if contador == 5:
-            tracinho()
-            print('Quantidade de tentativas expirada, crie uma nova senha!')
-            tracinho()
-            sleep(1)
-            redefinir_senha(email)
-
 def login():
+    limpar_tela()
     dados = carregar_dados()
     tracinho()
     print('Seja bem-vindo ao Ninho Desk🦉\nSeu APP de gerenciamento acadêmico!\nVamos iniciar?')
     tracinho()
     print('[1] Login')
     print('[2] Cadastrar novo usuário')
+    print('[3] Sair')
     while True:
         try:
             tracinho()
@@ -189,35 +199,51 @@ def login():
                 limpar_tela()
                 tracinho()
                 email = str(input('Informe o email de login: '))
-                verifica_email(email)
-                while True:
-                    tracinho()
-                    print('[1] Informe a senha')
-                    print('[2] Esqueceu a senha')
-    
+                guia, email = verifica_email(email)
+                if guia == 1:
+                    login()
+                    return
+                elif guia == 2:
                     while True:
-                        try:
+                        tracinho()
+                        print('[1] Informe a senha')
+                        print('[2] Esqueceu a senha')
+                        while True:
+                            try:
+                                tracinho()
+                                escolha = int(input('Escolha uma opção acima: '))
+                            except:
+                                print('Opção inválida! Tente novamente!')
+                            else:
+                                break
+                        if escolha == 1:
                             tracinho()
-                            escolha = int(input('Escolha uma opção acima: '))
-                        except:
-                            print('Opção inválida! Tente novamente!')
-                        else:
+                            senha = maskpass.askpass(prompt='Informe a sua senha: ')
+                            verifica_senha(email, senha)
                             break
-                    if escolha == 1:
-                        tracinho()
-                        senha = maskpass.askpass(prompt='Informe a sua senha: ')
-                        verifica_senha(email, senha)
-                        break
-                    elif escolha == 2:
-                        tracinho()
-                        redefinir_senha(email)
-                        break
-                    else:
-                        print('Opção inválida! Tente novamente!')
-                break
+                        elif escolha == 2:
+                            tracinho()
+                            redefinir_senha(email)
+                            break
+                        else:
+                            print('Opção inválida! Tente novamente!')
+                    break
             elif escolha == 2:
                 limpar_tela()
                 cadastrar_usuario()
+                login()
+                break
+            elif escolha == 3:
+                limpar_tela()
+                tracinho()
+                print('Nos despedimos por aqui, até a próxima!')
+                sleep(1)
+                for i in range(3):
+                    print('.')
+                    sleep(1)
+                tracinho()
+                print('Ninho Desk🦉')
+                tracinho()
                 break
             else:
                 print('Opção inválida! Tente novamente!')

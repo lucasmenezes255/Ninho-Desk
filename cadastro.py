@@ -12,6 +12,25 @@ def carregar_dados():
         dados = json.load(arquivo)
     return dados
 
+def senha_master():
+    tracinho()
+    while True:
+        senha_mestre = maskpass.askpass(prompt='Digite a senha mestre: ')
+        if senha_mestre == '':
+            print('Senha não pode ser vazia!')
+        elif len(senha_mestre) < 8:
+            print('Senha muito curta, crie uma senha de pelo menos 8 caracteres')
+            tracinho()
+        elif not re.search('[a-zA-Z]', senha_mestre):
+            print('A senha não possui letras')
+            tracinho()
+        else:
+            confirma = maskpass.askpass(prompt='Confirme sua senha: ')
+            if confirma!= senha_mestre:
+                print('Senha digitada não correspode, tente novamente')
+                tracinho()
+            else:
+                return senha_mestre
 
 def cadastrar_usuario():
     tracinho()
@@ -30,6 +49,7 @@ def cadastrar_usuario():
             break
     email = str(input('Digite seu email: '))
     email = email_valido(email)
+    tracinho()
     while True:
         senha = maskpass.askpass(prompt='Digite sua senha: ')
         if senha == '':
@@ -37,18 +57,44 @@ def cadastrar_usuario():
         elif len(senha) < 8:
             print('Senha muito curta, crie uma senha de pelo menos 8 caracteres')
         else:
-            break
-    senha2 = maskpass.askpass(prompt='Confirme sua senha: ')
-    while senha2!=senha:
-        print('Senha digitada não correspode, tente novamente')
-        senha = maskpass.askpass(prompt='Digite sua senha: ')
-        senha2 = maskpass.askpass(prompt='Confirme sua senha: ')
+            senha2 = maskpass.askpass(prompt='Confirme sua senha: ')
+            if senha2!=senha:
+                print('Senha digitada não correspode, tente novamente')
+            else:
+                break
+    senha_mestre = senha_master()
+    tracinho()
     serie_crianca = serie_valida()
     dados_usuarios =  carregar_dados() # Carrega os dados existentes para dados_usuarios
-    dados_usuarios[email] = {'Nome': nome, 'Série da Criança': serie_crianca, 'Senha': senha} # O email cadastrado é a chave dos dados novos
+    dados_usuarios[email] = {'Nome': nome, 'Série da Criança': serie_crianca, 'Senha': senha, 'Senha Mestre': senha_mestre} # O email cadastrado é a chave dos dados novos
     with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
         json.dump(dados_usuarios, arquivo, indent=4, ensure_ascii=False)
     print ('\nUsuário cadastrado com sucesso!')
+
+def redefinir_senha_master(email):
+    dados = carregar_dados()
+    while True:
+        nova_senha = maskpass.askpass(prompt='Digite a senha mestre: ')
+        if nova_senha == '':
+            print('Senha não pode ser vazia!')
+        elif len(nova_senha) < 8:
+            print('Senha muito curta, crie uma senha de pelo menos 8 caracteres')
+            tracinho()
+        elif not re.search('[a-zA-Z]', nova_senha):
+            print('A senha não possui letras')
+            tracinho()
+        else:
+            confirma = maskpass.askpass(prompt='Confirme sua senha: ')
+            if confirma!= nova_senha:
+                print('Senha digitada não correspode, tente novamente')
+                tracinho()
+            else:
+                break
+    tracinho()
+    print('Senha redefinida com sucesso')
+    dados[email]['Senha Mestre'] = nova_senha
+    with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
+        json.dump(dados, arquivo, indent=4, ensure_ascii=False)
 
 def redefinir_senha(email):
     dados = carregar_dados()
@@ -63,7 +109,7 @@ def redefinir_senha(email):
             if nova_senha2!= nova_senha:
                 print('Senha digitada não corresponde, tente novamente')
             else:
-                break
+                break    
     tracinho()
     print('Senha redefinida com sucesso')
     dados[email]['Senha'] = nova_senha
