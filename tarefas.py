@@ -158,6 +158,7 @@ def administrar_tarefas(email):
                     tracinho()
                 else:
                     break
+                
             while True:
                 descricao = str(input('Informe os detalhes da tarefa: ')).strip()
                 if descricao == "" or ' ' in descricao[0]:
