@@ -1,9 +1,11 @@
 from util import limpar_tela, tracinho
-import json
 from os import path
 from time import sleep
 from rich.table import Table
 from rich.console import Console
+from datetime import datetime
+import json
+import re
 
 def carregar_tarefas(email):
     if not path.exists('dados_tarefas.json'):
@@ -84,7 +86,7 @@ def editar_tarefas(email):
                 except:
                     print('Informação inválida! Selecione um valor do menu')
                 else:
-                    if escolha not in [1, 2, 3]:
+                    if escolha not in [1, 2, 3, 4]:
                         print('Informação inválida! Selecione um valor do menu')
                     else:
                         break
@@ -149,7 +151,7 @@ def administrar_tarefas(email):
               '[2] Editar Tarefa\n'
               '[3] Sair\n')
         tracinho()
-        escolha = str(input('Informe a prioridadea da tarefa: ')).strip()
+        escolha = str(input('Selecione uma opção: ')).strip()
         if escolha == '1':
             while True:
                 titulo = str(input('Informe o título da tarefa: ')).strip()
@@ -166,6 +168,23 @@ def administrar_tarefas(email):
                     tracinho()
                 else:
                     break
+
+            while True:
+                formato_padrao = r'\d{2}/\d{2}/\d{4}'
+                data_prazo = input('Digite a data de vencimento (DD/MM/AAAA): ').strip()
+                while not re.fullmatch(formato_padrao, data_prazo):
+                    print ('Formato de data inválida!')
+                    data_prazo = input('Digite a data de vencimento (DD/MM/AAAA): ').strip()
+                try:
+                    data_venc = datetime.strptime(data_prazo, '%d/%m/%Y')
+                    hoje = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
+                    if data_venc<hoje:
+                        print('Data anterior a hoje não pode ser selecionada! Digite novamente')
+                        continue
+                    break
+                except:
+                    print('Data inexistente! Digite novamente')  
+
             while True:
                 print('='*40)
                 print(f'{" PRIORIDADES ":^40}')
@@ -191,12 +210,14 @@ def administrar_tarefas(email):
                 else:
                     print('ERRO! Informe um dígito válida')
                     tracinho()
-            tarefas[email][prioridade].append({'Título': titulo, 'Descrição': descricao, 'Prioridade': prioridade})
+                    break
+            tarefas[email][prioridade].append({'Título': titulo, 'Descrição': descricao, 'Data': data_prazo, 'Prioridade': prioridade})
             with open('dados_tarefas.json', 'w', encoding='utf-8') as arquivo:
                 json.dump(tarefas, arquivo, indent=4, ensure_ascii=False)
             tracinho()
             print('Tarefa adiciona com sucesso!')
             sleep(1)
+            input('Clique na tecla "Enter" para voltar')
             from main import controle_pais
             controle_pais(email, 1)
             break

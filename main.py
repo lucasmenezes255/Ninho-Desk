@@ -1,10 +1,12 @@
 from cadastro import cadastrar_usuario, carregar_dados, redefinir_senha, email_valido, serie_valida, redefinir_senha_master
 from util import tracinho, limpar_tela
-import maskpass
 from time import sleep
-import json
 from tarefas import administrar_tarefas
 from verificacoes import verifica_email, verifica_senha, verifica_senha_master
+from lembretes import add_lembretes, ver_lembrete
+from cronograma import ver_cronograma
+import maskpass
+import json
 
 def controle_pais(email, caminho):
     dados = carregar_dados()
@@ -40,9 +42,9 @@ def controle_pais(email, caminho):
             administrar_tarefas(email)
             break
         elif escolha_menu == '2':       #Aqui pra redirecionar para as respectivas funções quando estiverem prontas
-            organizar_cronograma()
+            organizar_cronograma(email)
         elif escolha_menu == '3':
-            criar_lembrete()
+            add_lembretes()
         elif escolha_menu == '4':
             limpar_tela()
             print('Voltando')
@@ -151,7 +153,7 @@ def menu_estudante(email):
             conferir_tarefas()
             break
         elif escolha_menu == '2':       #Aqui pra redirecionar para as respectivas funções quando estiverem prontas
-            ver_cronograma()
+            ver_cronograma(email)
             break
         elif escolha_menu == '3':
             ver_lembrete()

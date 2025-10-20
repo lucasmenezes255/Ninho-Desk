@@ -52,6 +52,27 @@ def cadastrar_usuario():
         json.dump(dados_usuarios, arquivo, indent=4, ensure_ascii=False)
     print ('\nUsuário cadastrado com sucesso!')
 
+
+def senha_master():
+    tracinho()
+    while True:
+        senha_mestre = maskpass.askpass(prompt='Digite a senha mestre: ')
+        if senha_mestre == '':
+            print('Senha não pode ser vazia!')
+        elif len(senha_mestre) < 8:
+            print('Senha muito curta, crie uma senha de pelo menos 8 caracteres')
+            tracinho()
+        elif not re.search('[a-zA-Z]', senha_mestre):
+            print('A senha não possui letras')
+            tracinho()
+        else:
+            confirma = maskpass.askpass(prompt='Confirme sua senha: ')
+            if confirma!= senha_mestre:
+                print('Senha digitada não correspode, tente novamente')
+                tracinho()
+            else:
+                return senha_mestre
+
 def redefinir_senha_master(email):
     dados = carregar_dados()
     while True:
