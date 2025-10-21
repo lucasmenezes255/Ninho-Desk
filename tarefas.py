@@ -135,6 +135,7 @@ def editar_tarefas(email):
                                 limpar_tela()
                                 editar_tarefas()
                                 break
+                            
                 tracinho()
                 print('Tarefa movida com sucesso!')
                 with open('dados_tarefas.json', 'w', encoding='utf-8') as arquivo:
