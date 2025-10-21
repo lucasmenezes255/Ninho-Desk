@@ -58,6 +58,8 @@ def ver_lembrete(email):
                     print('.')
                     sleep(1)
                 limpar_tela()
+                from main import menu_estudante
+                menu_estudante(email)
                 break
             else:
                 tracinho()
