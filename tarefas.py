@@ -39,31 +39,12 @@ def editar_tarefas(email):
         administrar_tarefas(email)
         return
     else:
-        for i in range(0, len(task)): 
-            if i == 0:
-                while True:
-                    for quant_task in range(0, len(task["ALTA"])):
-                        print(f'{i+1}. Título: {task["ALTA"][quant_task]["Título"]}\n   Descrição: {task["ALTA"][quant_task]["Descrição"]}\n   Prioridade: {task["ALTA"][quant_task]["Prioridade"]}')
-                        tracinho()  
-                    break
-            elif i == 1:
-                while True:
-                    for quant_task in range(0, len(task["MEDIA"])):
-                        print(f'{i+1}. Título: {task["MEDIA"][quant_task]["Título"]}\n   Descrição: {task["MEDIA"][quant_task]["Descrição"]}\n   Prioridade: {task["MEDIA"][quant_task]["Prioridade"]}')
-                        tracinho()  
-                    break
-            elif i == 2:
-                while True:
-                    for quant_task in range(0, len(task["BAIXA"])):
-                        print(f'{i+1}. Título: {task["BAIXA"][quant_task]["Título"]}\n   Descrição: {task["BAIXA"][quant_task]["Descrição"]}\n   Prioridade: {task["BAIXA"][quant_task]["Prioridade"]}')
-                        tracinho()  
-                    break
-            elif i == 3:
-                while True:
-                    for quant_task in range(0, len(task["SEM PRIORIDADE"])):
-                        print(f'{i+1}. Título: {task["SEM PRIORIDADE"][quant_task]["Título"]}\n   Descrição: {task["SEM PRIORIDADE"][quant_task]["Descrição"]}\n   Prioridade: {task["SEM PRIORIDADE"][quant_task]["Prioridade"]}')
-                        tracinho()  
-                    break
+        for indice, prioridade in enumerate(task): 
+            for quant_task in range(0, len(task[prioridade])):
+                print(f'{indice+1}. Título: {task[prioridade][quant_task]["Título"]}\n   Descrição: {task[prioridade][quant_task]["Descrição"]}\n   Data: {task[prioridade][quant_task]["Data"]}\n   Prioridade: {task[prioridade][quant_task]["Prioridade"]}')
+                tracinho()  
+                break
+                    
         console = Console()
         tabela = Table(title='QUANTIDADE DE TAREFAS POR PRIORIDADE')
         tabela.add_column('Alta', style='red', justify='center')
@@ -91,48 +72,73 @@ def editar_tarefas(email):
                     else:
                         break
             if escolha == 1:
-                print('')
+                titulo_tarefa = str(input('Informe o título da tarefa que desejar mover: ')).strip()
+                nova_prioridade = str(input('Informe a nova prioridade da tarefa: ')).strip().upper()
+                for indice, prioridade in enumerate(task): 
+                    for quant_task in range(0, len(task[prioridade])):
+                        if task[prioridade][quant_task]["Título"] == titulo_tarefa:
+                            tarefa_copiada = task[prioridade][quant_task]
+                            task[nova_prioridade].append(tarefa_copiada)
+                            del tarefas[email][prioridade][quant_task]
+                tracinho()
+                print('Tarefa movida com sucesso!')
+                with open('dados_tarefas.json', 'w', encoding='utf-8') as arquivo:
+                    json.dump(tarefas, arquivo, indent=4, ensure_ascii=False)
+
             elif escolha == 2:
                 titulo_tarefa = str(input('Informe o título da tarefa que desejar apagar: '))
-                for i in range(0, len(task)): 
-                    if i == 0:
-                        for index in range(0, len(task["ALTA"])):
-                            if task["ALTA"][index]["Título"] == titulo_tarefa:
-                                del tarefas[email]["ALTA"][index]
-                                tracinho()
-                                print('Tarefa apagada com sucesso!')
-                                break
-                        with open('dados_tarefas.json', 'w', encoding='utf-8') as arquivo:
-                            json.dump(tarefas, arquivo, indent=4, ensure_ascii=False)
-                    elif i == 1:
-                        for index in range(0, len(task["MEDIA"])):
-                            if task["MEDIA"][index]["Título"] == titulo_tarefa:
-                                del tarefas[email]["ALTA"][index]
-                                tracinho()
-                                print('Tarefa apagada com sucesso!')
-                                break
-                        with open('dados_tarefas.json', 'w', encoding='utf-8') as arquivo:
-                            json.dump(tarefas, arquivo, indent=4, ensure_ascii=False)
-                    elif i == 2:
-                        for index in range(0, len(task["BAIXA"])):
-                            if task["BAIXA"][index]["Título"] == titulo_tarefa:
-                                del tarefas[email]["ALTA"][index]
-                                tracinho()
-                                print('Tarefa apagada com sucesso!')
-                                break
-                        with open('dados_tarefas.json', 'w', encoding='utf-8') as arquivo:
-                            json.dump(tarefas, arquivo, indent=4, ensure_ascii=False)
-                    elif i == 3:
-                        for index in range(0, len(task["SEM PRIORIDADE"])):
-                            if task["SEM PRIORIDADE"][index]["Título"] == titulo_tarefa:
-                                del tarefas[email]["ALTA"][index]
-                                tracinho()
-                                print('Tarefa apagada com sucesso!')
-                                break
-                        with open('dados_tarefas.json', 'w', encoding='utf-8') as arquivo:
-                            json.dump(tarefas, arquivo, indent=4, ensure_ascii=False)
+                for indice, prioridade in enumerate(task): 
+                    for quant_task in range(0, len(task[prioridade])):
+                        if task[prioridade][quant_task]["Título"] == titulo_tarefa:
+                            del tarefas[email][prioridade][quant_task]
+                            tracinho()
+                            print('Tarefa apagada com sucesso!')
+                            break
+                with open('dados_tarefas.json', 'w', encoding='utf-8') as arquivo:
+                    json.dump(tarefas, arquivo, indent=4, ensure_ascii=False)
+
             elif escolha == 3:
-                print('')
+                titulo_tarefa = str(input('Informe o título da tarefa que desejar editar: ')).strip()
+                print('='*40)
+                print(f'{"MENU DE EDIÇÕES":^40}')
+                print('='*40)
+                print('[1] Editar Título\n'
+                      '[2] Editar Descrição\n' 
+                      '[3] Editar Prazo\n' 
+                      '[4] Sair')
+                while True:  
+                    try:
+                        escolha = int(input('Escolha uma opção: '))
+                    except:
+                        print('Informação inválida! Selecione um valor do menu')
+                    else:
+                        if escolha not in [1, 2, 3, 4]:
+                            print('Informação inválida! Selecione um valor do menu')
+                        else:
+                            break
+                for indice, prioridade in enumerate(task): 
+                    for quant_task in range(0, len(task[prioridade])):
+                        if task[prioridade][quant_task]["Título"] == titulo_tarefa:
+                            if escolha == 1:
+                                novo_titulo = str(input('Informe o novo título: ')).strip()
+                                task[prioridade][quant_task]["Título"] = novo_titulo
+                                limpar_tela()
+                            elif escolha == 2:
+                                nova_descricao = str(input('Informe a nova descrição da tarefa: ')).strip()
+                                task[prioridade][quant_task]["Descrição"] = nova_descricao
+                                limpar_tela()
+                            elif escolha == 3:
+                                novo_prazo = input('Digite a data de vencimento (DD/MM/AAAA): ').strip()
+                                task[prioridade][quant_task]["Data"] = novo_prazo
+                                limpar_tela()
+                            elif escolha == 4:
+                                limpar_tela()
+                                editar_tarefas()
+                                break
+                tracinho()
+                print('Tarefa movida com sucesso!')
+                with open('dados_tarefas.json', 'w', encoding='utf-8') as arquivo:
+                    json.dump(tarefas, arquivo, indent=4, ensure_ascii=False)
             elif escolha == 4:
                 from main import controle_pais
                 controle_pais(email, 1)
@@ -160,7 +166,6 @@ def administrar_tarefas(email):
                     tracinho()
                 else:
                     break
-                
             while True:
                 descricao = str(input('Informe os detalhes da tarefa: ')).strip()
                 if descricao == "" or ' ' in descricao[0]:
