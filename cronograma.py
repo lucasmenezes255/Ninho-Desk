@@ -1,9 +1,10 @@
 from tarefas import carregar_tarefas
 from datetime import datetime
 from util import limpar_tela, tracinho
+from time import sleep
+from lembretes import ver_lembrete
 import json
 import os
-from time import sleep
 
 def carregar_cronograma(email):
     if not os.path.exists('cronograma.json'):
@@ -19,10 +20,12 @@ def salvar_cronograma(cronograma):
 def ver_cronograma(email):
     while True:
         limpar_tela()
-        with open('dados_tarefas.json', 'r', encoding='utf-8') as arq:
-                dados = json.load(arq)
+        dados = carregar_tarefas(email)
         if email not in dados:
+            tracinho()
             print('Nenhuma tarefa encontrada')
+            tracinho()
+            input('Clique na tecla "Enter" para voltar')
             return
         tarefas_usuario = dados[email]
         tarefas = (
@@ -35,24 +38,44 @@ def ver_cronograma(email):
         print('Cronograma de tarefas\n')
         if not tarefas:
             print('Nenhuma tarefa adicionada')
-            tracinho()
-            input('Clique na tecla "Enter" para voltar')
-            return
         tarefas_cronograma = sorted(
             tarefas, key=lambda tarefa:datetime.strptime(tarefa['Data'], '%d/%m/%Y')
         )
         for tarefa in tarefas_cronograma:
             print(f"{tarefa['Data']}: {tarefa['Título']}")
         tracinho()
-        print('Cronograma de Estudos')
+        print('Cronograma de Estudos\n')
         cronograma = carregar_cronograma(email)
         if email not in cronograma:
-            cronograma[email] = {}
-        lista = cronograma[email]
-        print(f"Segunda-Feira: {lista['Segunda-Feira']}\nTerça-Feira: {lista['Terça-Feira']}\nQuarta-Feira: {lista['Quarta-Feira']}\nQuinta-Feira: {lista['Quinta-Feira']}\nSexta-Feira: {lista['Sexta-Feira']}\nSábado: {lista['Sábado']}\nDomingo: {lista['Domingo']}")
-        tracinho()
-        input('Clique na tecla "Enter" para voltar')
-        return
+            print('Nenhum cronograma de estudos adicionado')
+            tracinho()
+            input('Clique na tecla "Enter" para voltar')
+            return
+        else: 
+            lista = cronograma[email]
+            print(f"Segunda-Feira: {lista['Segunda-Feira']}\nTerça-Feira: {lista['Terça-Feira']}\nQuarta-Feira: {lista['Quarta-Feira']}\nQuinta-Feira: {lista['Quinta-Feira']}\nSexta-Feira: {lista['Sexta-Feira']}\nSábado: {lista['Sábado']}\nDomingo: {lista['Domingo']}")
+            tracinho()
+            print('[1] Adicionar algum lembrete\n[2] Sair\n')
+            escolha = input('Selecione uma opção: ')
+            if escolha == '1':
+                limpar_tela()
+                print('Direcionando')
+                for i in range(3):
+                    print('.')
+                    sleep(1)
+                ver_lembrete(email)
+            elif escolha == '2':
+                limpar_tela()
+                print('Saindo')
+                for i in range(3):
+                    print('.')
+                    sleep(1)
+                limpar_tela()
+                return
+            else:
+                tracinho()
+                print ('Opção inválida! Tente novamente')
+                sleep(1)
 
 def organizar_cronograma(email):
     while True:
