@@ -105,7 +105,7 @@ def editar_tarefas(email):
                 print('[1] Editar Título\n'
                       '[2] Editar Descrição\n' 
                       '[3] Editar Prazo\n' 
-                      '[4] Sair')
+                      '[4] Sair ')
                 while True:  
                     try:
                         escolha = int(input('Escolha uma opção: '))
