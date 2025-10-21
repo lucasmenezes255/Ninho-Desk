@@ -4,7 +4,7 @@ from time import sleep
 from tarefas import administrar_tarefas
 from verificacoes import verifica_email, verifica_senha, verifica_senha_master
 from lembretes import add_lembretes, ver_lembrete
-from cronograma import ver_cronograma
+from cronograma import ver_cronograma, organizar_cronograma
 import maskpass
 import json
 
@@ -37,14 +37,14 @@ def controle_pais(email, caminho):
               '[3] Criar Lembretes\n'
               '[4] Voltar para o Menu\n')
         tracinho()
-        escolha_menu = str(input('Selecione uma opção: \n'))
+        escolha_menu = str(input('Selecione uma opção: '))
         if escolha_menu == '1':
             administrar_tarefas(email)
             break
         elif escolha_menu == '2':       #Aqui pra redirecionar para as respectivas funções quando estiverem prontas
             organizar_cronograma(email)
         elif escolha_menu == '3':
-            add_lembretes()
+            add_lembretes(email)
         elif escolha_menu == '4':
             limpar_tela()
             print('Voltando')
@@ -148,16 +148,14 @@ def menu_estudante(email):
             '[6] Editar Perfil\n' \
             '[7] Sair')
         tracinho()
-        escolha_menu = str(input('Selecione uma opção: \n'))
+        escolha_menu = str(input('Selecione uma opção: '))
         if escolha_menu == '1':
             conferir_tarefas()
             break
         elif escolha_menu == '2':       #Aqui pra redirecionar para as respectivas funções quando estiverem prontas
             ver_cronograma(email)
-            break
         elif escolha_menu == '3':
-            ver_lembrete()
-            break
+            ver_lembrete(email)
         elif escolha_menu == '4':
             print('FUNCIONALIDADE INDISPONÍVEL NO MOMENTO!')
             sleep(2)
