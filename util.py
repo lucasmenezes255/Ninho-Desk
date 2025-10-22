@@ -2,7 +2,7 @@ import os
 from platform import system
 
 def limpar_tela():
-    if os.name == 'nt':
+    if system == 'Windows':
         os.system('cls')
     else:
         os.system('clear')

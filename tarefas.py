@@ -160,7 +160,7 @@ def editar_tarefas(email):
         console.print(tabela)
 
         console1 = Console()
-        tabela1 = Table(title='QUANTIDADE DE TAREFAS Concluídas POR PRIORIDADE')
+        tabela1 = Table(title='QUANTIDADE DE TAREFAS CONCLUÍDAS POR PRIORIDADE')
         tabela1.add_column('Alta', style='red', justify='center')
         tabela1.add_column('Média', style='yellow', justify='center')
         tabela1.add_column('Baixa', style='green', justify='center')
@@ -217,7 +217,24 @@ def editar_tarefas(email):
                     json.dump(tarefas, arquivo, indent=4, ensure_ascii=False)
                     
             elif escolha == 3:
-                titulo_tarefa = str(input('Informe o título da tarefa que desejar editar: ')).strip()
+                while True:
+                    titulo_tarefa = str(input('Informe o título da tarefa a ser concluída: ')).strip()
+                    if titulo_tarefa == '' or titulo_tarefa == ' ':
+                        print('ERRO: Campo vazio! Tente novamente\n')
+                        tracinho()
+                    else:
+                        tarefa_inexistente = 0
+                        for index, status in enumerate(task): 
+                            for indice, prioridade in enumerate(task[status]): 
+                                for quant_task in range(0, len(task[status][prioridade])):
+                                    if titulo_tarefa == task["Pendente"][prioridade][quant_task]["Título"]:
+                                        tarefa_inexistente = 1
+
+                        if tarefa_inexistente == 0:
+                            print('ERRO: Tarefa inexistente! Tente novamente\n')
+                            tracinho()
+                        else:
+                            break
                 print('='*40)
                 print(f'{"MENU DE EDIÇÕES":^40}')
                 print('='*40)
@@ -248,7 +265,22 @@ def editar_tarefas(email):
                                     task[status][prioridade][quant_task]["Descrição"] = nova_descricao
                                     limpar_tela()
                                 elif escolha == 3:
-                                    novo_prazo = input('Digite a data de vencimento (DD/MM/AAAA): ').strip()
+                                    while True:
+                                        formato_padrao = r'\d{2}/\d{2}/\d{4}'
+                                        novo_prazo = input('Digite a data de vencimento (DD/MM/AAAA): ').strip()
+                                        while not re.fullmatch(formato_padrao, novo_prazo):
+                                            print ('ERRO: Formato de data inválida!\n')
+                                            novo_prazo = input('Digite a data de vencimento (DD/MM/AAAA): ').strip()
+                                        try:
+                                            data_venc = datetime.strptime(novo_prazo, '%d/%m/%Y')
+                                            hoje = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
+                                            if data_venc<hoje:
+                                                print('\nERRO: Data anterior a hoje não pode ser selecionada! Digite novamente')
+                                                continue
+                                            break
+                                        except:
+                                            print('\nERRO: Data inexistente! Digite novamente')
+                                    
                                     task[status][prioridade][quant_task]["Data"] = novo_prazo
                                     limpar_tela()
                                 elif escolha == 4:
@@ -278,6 +310,7 @@ def administrar_tarefas(email):
               '[2] Editar Tarefa\n'
               '[3] Sair\n')
         tracinho()
+
         escolha = str(input('Selecione uma opção: ')).strip()
         if escolha == '1':
             while True:
@@ -299,17 +332,17 @@ def administrar_tarefas(email):
                 formato_padrao = r'\d{2}/\d{2}/\d{4}'
                 data_prazo = input('Digite a data de vencimento (DD/MM/AAAA): ').strip()
                 while not re.fullmatch(formato_padrao, data_prazo):
-                    print ('Formato de data inválida!')
+                    print ('\nERRO: Formato de data inválida!')
                     data_prazo = input('Digite a data de vencimento (DD/MM/AAAA): ').strip()
                 try:
                     data_venc = datetime.strptime(data_prazo, '%d/%m/%Y')
                     hoje = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
                     if data_venc<hoje:
-                        print('Data anterior a hoje não pode ser selecionada! Digite novamente')
+                        print('\nERRO: Data anterior a hoje não pode ser selecionada! Digite novamente')
                         continue
                     break
                 except:
-                    print('Data inexistente! Digite novamente')  
+                    print('\nERRO: Data inexistente! Digite novamente')  
 
             while True:
                 print('='*40)
