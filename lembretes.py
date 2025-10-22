@@ -15,8 +15,20 @@ def salvar_lembretes(lembretes):
         json.dump(lembretes, arquivo, indent=4, ensure_ascii=False)
 
 def add_lembretes(email):
-    tit_lembrete = input('Digite o título do lembrete a ser adicionado: ')
-    desc_lembrete = input('Digite a descrição do lembrete: ')
+    while True:
+        tit_lembrete = input('Digite o título do lembrete a ser adicionado: ').strip()
+        tracinho()
+        if tit_lembrete == '' or  ' ' in tit_lembrete[0]:
+            print('\nERRO: Título não pode ser vazio!')
+        else:
+            break
+    while True:
+        desc_lembrete = input('Digite a descrição do lembrete: ').strip()
+        tracinho()
+        if desc_lembrete == '' or  ' ' in desc_lembrete[0]:
+            print('\nERRO: Descrição não pode ser vazio!')
+        else:
+            break
     lembretes = carregar_lembretes()
     if email not in lembretes:
         lembretes[email] = []
@@ -30,21 +42,35 @@ def lista_lembretes(email):
         limpar_tela()
         tracinho()
         print('Nenhum lembrete definido!')
-        tracinho()
-        input('Clique na tecla "Enter" para voltar')
+        while True:
+            tracinho()
+            if input('\nTecle "ENTER" para voltar para o menu ') == "":
+                ver_lembrete(email)
+                break
+            else:
+                print('ERRO! Tecla errada')
+                tracinho()
     elif len(lembretes) >= 1:
         tracinho()
         print('Seus lembretes:')
         for i, lembrete in enumerate (lembretes[email], start=1):
             print(f'\n {[i]} {lembrete["Título"]}:\n{lembrete["Descrição"]}')
-        tracinho()
-        input('Clique na tecla "Enter" para voltar')
+        while True:
+            tracinho()
+            if input('\nTecle "ENTER" para voltar para o menu ') == "":
+                ver_lembrete(email)
+                break
+            else:
+                print('ERRO! Tecla errada')
+                tracinho()
 
 def ver_lembrete(email):
     while True:
             limpar_tela()
             tracinho()
-            print('[1] Acessar lista de lembretes\n[2] Adicionar lembretes\n[3] Voltar ao Menu do Estudante')
+            print('[1] Acessar lista de lembretes\n'
+                  '[2] Adicionar lembretes\n'
+                  '[3] Voltar ao Menu do Estudante')
             tracinho()
             escolha = input('Selecione uma opção: ')
             if escolha == '1':

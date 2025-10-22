@@ -33,7 +33,7 @@ def verifica_senha_master(email, senha):
             return
         else:
             limpar_tela()
-            print('Senha incorreta, tente novamente!')
+            print('\nERRO: Senha incorreta, tente novamente!')
             senha = maskpass.askpass(prompt='Informe a sua senha: ')
             contador += 1
         if contador == 5:
@@ -46,8 +46,8 @@ def verifica_senha_master(email, senha):
             return
 
 def verifica_email(email): 
-    limpar_tela()
     while True:
+        limpar_tela()
         dados = carregar_dados()   
         if not email in dados:
             print('\nEmail inválido! Cadastre um novo usuário ou insira um email válido.\n')
@@ -59,21 +59,25 @@ def verifica_email(email):
             if  escolha == '1':
                 tracinho()
                 email = str(input('Insira um email válido: '))
+                sleep(1)
             elif escolha == '2':
+                limpar_tela()
                 cadastrar_usuario()
                 guia = 1
                 break
 
             elif escolha == None:
                 limpar_tela()
-                print('Informe uma escolha válida') 
+                print('ERRO: Informe uma escolha válida!') 
                 tracinho()  
-                                                            
+                sleep(1)                                       
             else:
                 limpar_tela()
-                print('Opção inválida! Tente novamente!')
+                print('ERRO: Opção inválida! Tente novamente!')
                 tracinho()
-        guia = 2
-        break
+                sleep(1)
+        else:
+            guia = 2
+            break
     return guia, email
 

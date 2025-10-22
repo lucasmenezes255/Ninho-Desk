@@ -1,10 +1,10 @@
 from cadastro import cadastrar_usuario, carregar_dados, redefinir_senha, email_valido, serie_valida, redefinir_senha_master
 from util import tracinho, limpar_tela
 from time import sleep
-from tarefas import administrar_tarefas
+from tarefas import administrar_tarefas, conferir_tarefas, carregar_tarefas
 from verificacoes import verifica_email, verifica_senha, verifica_senha_master
-from lembretes import add_lembretes, ver_lembrete
-from cronograma import ver_cronograma, organizar_cronograma
+from lembretes import add_lembretes, ver_lembrete, carregar_lembretes
+from cronograma import ver_cronograma, organizar_cronograma, carregar_cronograma
 import maskpass
 import json
 
@@ -70,23 +70,45 @@ def editar_perfil(email):    # Aqui o usuário pode alterar os dados do seu perf
               '[2] Editar Nome de Usuário\n'
               '[3] Editar Senha\n'
               '[4] Editar Série da Criança\n' 
-              '[5] Voltar para o Menu do Estudante')
+              '[5] Apagar perfil\n' 
+              '[6] Voltar para o Menu do Estudante')
         tracinho()
         escolha_menu = str(input('Selecione uma opção: \n'))
 
         if escolha_menu == '1':
-            print('-'*40)
+            tarefas = carregar_tarefas(email)
+            lembrete = carregar_lembretes()
+            cronograma = carregar_cronograma(email)
+            tracinho()
             novo_email = str(input('Digite seu novo email: '))
             novo_email = email_valido(novo_email)
             dados[novo_email] = dados[email]
+            tarefas[novo_email] = tarefas[email]
+            lembrete[novo_email] = lembrete[email]
+            cronograma[novo_email] = cronograma[email]
             tracinho()
             with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
                 del dados[email]
                 json.dump(dados, arquivo, indent=4, ensure_ascii=False)
+
+            with open('dados_tarefas.json', 'w', encoding='utf-8') as arquivo:
+                del tarefas[email]
+                json.dump(tarefas, arquivo, indent=4, ensure_ascii=False)
+
+            with open('lembretes.json', 'w', encoding='utf-8') as arquivo:
+                del lembrete[email]
+                json.dump(lembrete, arquivo, indent=4, ensure_ascii=False)
+
+            with open('cronograma.json', 'w', encoding='utf-8') as arquivo:
+                del cronograma[email]
+                json.dump(cronograma, arquivo, indent=4, ensure_ascii=False)
             print('Email redefinido com sucesso!')
             sleep(1)
+            editar_perfil(novo_email)
+            break
 
-        elif escolha_menu == '2':      
+        elif escolha_menu == '2':
+            tracinho()   
             while True:
                 novo_user = str(input('Digite seu novo nome: ')).strip()
                 if novo_user == '':
@@ -107,11 +129,15 @@ def editar_perfil(email):    # Aqui o usuário pode alterar os dados do seu perf
             sleep(1)
 
         elif escolha_menu == '3':
+            tracinho()
+            dados = carregar_dados()
             email = email
             redefinir_senha(email)
             sleep(1)
 
         elif escolha_menu == '4':
+            tracinho()
+            dados = carregar_dados()
             nova_serie = serie_valida()
             dados[email]['Série da Criança'] = nova_serie
             tracinho()
@@ -121,6 +147,33 @@ def editar_perfil(email):    # Aqui o usuário pode alterar os dados do seu perf
             sleep(1)
 
         elif escolha_menu == '5':
+            tracinho()
+            dados = carregar_dados()
+            tarefas = carregar_tarefas(email)
+            lembrete = carregar_lembretes()
+            cronograma = carregar_cronograma(email)
+
+            with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
+                del dados[email]
+                json.dump(dados, arquivo, indent=4, ensure_ascii=False)
+            
+            with open('dados_tarefas.json', 'w', encoding='utf-8') as arquivo:
+                del tarefas[email]
+                json.dump(tarefas, arquivo, indent=4, ensure_ascii=False)
+
+            with open('lembretes.json', 'w', encoding='utf-8') as arquivo:
+                del lembrete[email]
+                json.dump(lembrete, arquivo, indent=4, ensure_ascii=False)
+
+            with open('cronograma.json', 'w', encoding='utf-8') as arquivo:
+                del cronograma[email]
+                json.dump(cronograma, arquivo, indent=4, ensure_ascii=False)
+            tracinho()
+            print('Apagando...\n')
+            sleep(3)
+            login()
+            return
+        elif escolha_menu == '6':
             limpar_tela()
             print('Voltando')
             for i in range(3):
@@ -131,7 +184,7 @@ def editar_perfil(email):    # Aqui o usuário pode alterar os dados do seu perf
             break
         else:
             tracinho()
-            print ('Opção inválida! Tente novamente')
+            print ('\nERRO: Opção inválida! Tente novamente')
             sleep(1)
 
 def menu_estudante(email):
@@ -150,7 +203,7 @@ def menu_estudante(email):
         tracinho()
         escolha_menu = str(input('Selecione uma opção: '))
         if escolha_menu == '1':
-            conferir_tarefas()
+            conferir_tarefas(email)
             break
         elif escolha_menu == '2':       #Aqui pra redirecionar para as respectivas funções quando estiverem prontas
             ver_cronograma(email)
@@ -180,20 +233,22 @@ def menu_estudante(email):
             sleep(1)
     
 def login():
-    limpar_tela()
-    dados = carregar_dados()
-    tracinho()
-    print('Seja bem-vindo ao Ninho Desk🦉\nSeu APP de gerenciamento acadêmico!\nVamos iniciar?')
-    tracinho()
-    print('[1] Login')
-    print('[2] Cadastrar novo usuário')
-    print('[3] Sair')
     while True:
+        limpar_tela()
+        dados = carregar_dados()
+        tracinho()
+        print('Seja bem-vindo ao Ninho Desk🦉\nSeu APP de gerenciamento acadêmico!\nVamos iniciar?')
+        tracinho()
+        print('[1] Login')
+        print('[2] Cadastrar novo usuário')
+        print('[3] Sair')
         try:
             tracinho()
             escolha = int(input('Escolha uma opção: '))
         except:
-            print('Opção inválida! Tente novamente!')
+            print('\nERRO: Opção inválida! Tente novamente!')
+            tracinho()
+            sleep(1)
         else:
             if escolha == 1:
                 limpar_tela()
@@ -246,7 +301,9 @@ def login():
                 tracinho()
                 break
             else:
-                print('Opção inválida! Tente novamente!')
+                print('\nERRO: Opção inválida! Tente novamente!')
+                tracinho()
+                sleep(1)
 
 if __name__ == "__main__":
     login()
