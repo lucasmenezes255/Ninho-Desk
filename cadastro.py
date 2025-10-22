@@ -2,7 +2,7 @@ import json
 import os
 import re
 import maskpass
-from util import tracinho, limpar_tela
+from util import tracinho
 from time import sleep
 
 def carregar_dados():

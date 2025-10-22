@@ -307,7 +307,3 @@ def login():
 
 if __name__ == "__main__":
     login()
-
-'''
- - Colocar código de verificação por email para quando for mudar a senha ou para quando tiver no esqueceu a senha
-'''

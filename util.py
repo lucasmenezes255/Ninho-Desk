@@ -9,4 +9,3 @@ def limpar_tela():
 
 def tracinho():
     print('-'*40)
-
