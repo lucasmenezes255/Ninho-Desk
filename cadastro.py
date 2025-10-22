@@ -156,7 +156,7 @@ def email_valido(email):
                 tracinho()
                 email = str(input('Digite seu email: '))
                 tracinho()
-                email_valido(email)
+                email = email_valido(email)
                 break
             return email
     

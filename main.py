@@ -151,7 +151,7 @@ def editar_perfil(email):    # Aqui o usuário pode alterar os dados do seu perf
             dados = carregar_dados()
             tarefas = carregar_tarefas(email)
             lembrete = carregar_lembretes()
-            cronograma = carregar_cronograma(email)
+            cronograma = carregar_cronograma()
 
             with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
                 del dados[email]
@@ -260,6 +260,7 @@ def login():
                     return
                 elif guia == 2:
                     while True:
+                        dados = carregar_dados()
                         tracinho()
                         print('[1] Informe a senha')
                         print('[2] Esqueceu a senha')
@@ -279,7 +280,6 @@ def login():
                         elif escolha == 2:
                             tracinho()
                             redefinir_senha(email)
-                            break
                         else:
                             print('Opção inválida! Tente novamente!')
                     break

@@ -149,7 +149,7 @@ def add_cronograma(email):
     sexta = input('Defina o que será estudado na Sexta-Feira: ')
     sabado = input('Defina o que será estudado no Sábado: ')
     domingo = input('Defina o que será estudado no Domingo: ')
-    cronograma = carregar_cronograma(email)
+    cronograma = carregar_cronograma()
     if email not in cronograma:
         cronograma[email] = []
     cronograma[email]= {"Segunda-Feira": segunda, "Terça-Feira": terca, "Quarta-Feira": quarta, "Quinta-Feira": quinta, "Sexta-Feira": sexta, "Sábado": sabado, "Domingo": domingo}
