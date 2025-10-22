@@ -80,12 +80,14 @@ def conferir_tarefas(email):
                                         for quant_task in range(0, len(task["Pendente"][prioridade])):
                                             if titulo_tarefa == task["Pendente"][prioridade][quant_task]["Título"]:
                                                 tarefa_inexistente = 1
-                                                tarefa_copiada = task["Pendente"][prioridade][quant_task]
-                                                task['Concluída'][prioridade].append(tarefa_copiada)
+                                                tarefa_copiada = tarefas[email]["Pendente"][prioridade][quant_task]
+                                                tarefas[email]['Concluída'][prioridade].append(tarefa_copiada)
                                                 del task["Pendente"][prioridade][quant_task]
                                                 with open('dados_tarefas.json', 'w', encoding='utf-8') as arq:
                                                     json.dump(tarefas, arq, indent=4, ensure_ascii=False)
                                                 print('\nMudança feita com sucesso!')
+                                                break
+                                            
                                     if tarefa_inexistente == 0:
                                         print('ERRO: Tarefa inexistente! Tente novamente\n')
                                         tracinho()
@@ -377,7 +379,7 @@ def administrar_tarefas(email):
             sleep(1)
             while True:
                 if input('\nTecle "ENTER" para voltar para o menu ') == "":
-                    conferir_tarefas(email)
+                    administrar_tarefas(email)
                     break
                 else:
                     print('ERRO! Tecla errada')
