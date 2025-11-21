@@ -1,8 +1,10 @@
-from cadastro import cadastrar_usuario, carregar_dados, redefinir_senha, email_valido, serie_valida, redefinir_senha_master
-from util import tracinho, limpar_tela
+from cadastro import Usuario
+from cadastro import carregar_dados, redefinir_senha, redefinir_senha_master
+from util import tracinho, limpar_tela, traco_igual
 from time import sleep
 from tarefas import administrar_tarefas, conferir_tarefas, carregar_tarefas
-from verificacoes import verifica_email, verifica_senha, verifica_senha_master
+from verificacoes import verifica_email_login, verifica_senha, verifica_senha_master
+from verificacoes import Verificacao
 from lembretes import add_lembretes, ver_lembrete, carregar_lembretes
 from cronograma import ver_cronograma, organizar_cronograma, carregar_cronograma
 import maskpass
@@ -254,38 +256,35 @@ def login():
                 limpar_tela()
                 tracinho()
                 email = str(input('Informe o email de login: '))
-                guia, email = verifica_email(email)
-                if guia == 1:
-                    login()
-                    return
-                elif guia == 2:
+                validacao = Verificacao(email)
+                validacao.verifica_email_login()
+                while True:
+                    tracinho()
+                    print('[1] Informe a senha')
+                    print('[2] Esqueceu a senha')
                     while True:
-                        dados = carregar_dados()
-                        tracinho()
-                        print('[1] Informe a senha')
-                        print('[2] Esqueceu a senha')
-                        while True:
-                            try:
-                                tracinho()
-                                escolha = int(input('Escolha uma opção acima: '))
-                            except:
-                                print('Opção inválida! Tente novamente!')
-                            else:
-                                break
-                        if escolha == 1:
+                        try:
                             tracinho()
-                            senha = maskpass.askpass(prompt='Informe a sua senha: ')
-                            verifica_senha(email, senha)
-                            break
-                        elif escolha == 2:
-                            tracinho()
-                            redefinir_senha(email)
-                        else:
+                            escolha = int(input('Escolha uma opção acima: '))
+                        except:
                             print('Opção inválida! Tente novamente!')
-                    break
+                        else:
+                            break
+                    if escolha == 1:
+                        tracinho()
+                        senha = maskpass.askpass(prompt='Informe a sua senha: ')
+                        verifica_senha(email, senha)
+                        break
+                    elif escolha == 2:
+                        tracinho()
+                        redefinir_senha(email)
+                    else:
+                        print('Opção inválida! Tente novamente!')
+                break
             elif escolha == 2:
                 limpar_tela()
-                cadastrar_usuario()
+                usuario = Usuario()
+                usuario.validar_username()
                 login()
                 break
             elif escolha == 3:

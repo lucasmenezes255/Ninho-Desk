@@ -1,4 +1,5 @@
 import os
+from time import sleep
 
 def limpar_tela():
     if os.name == 'nt':
@@ -9,4 +10,9 @@ def limpar_tela():
 def tracinho():
     print('-'*40)
 
-limpar_tela()
+def pausa():
+    sleep(2)
+    limpar_tela()
+
+def traco_igual():
+    print('='*40)
