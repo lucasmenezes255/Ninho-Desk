@@ -1,34 +1,32 @@
 from cadastro import Usuario
-from cadastro import carregar_dados, redefinir_senha, redefinir_senha_master
+from cadastro import carregar_dados
 from util import tracinho, limpar_tela, traco_igual
 from time import sleep
 from tarefas import administrar_tarefas, conferir_tarefas, carregar_tarefas
-from verificacoes import verifica_email_login, verifica_senha, verifica_senha_master
+
 from verificacoes import Verificacao
 from lembretes import add_lembretes, ver_lembrete, carregar_lembretes
 from cronograma import ver_cronograma, organizar_cronograma, carregar_cronograma
 import maskpass
 import json
 
-def controle_pais(email, caminho):
-    dados = carregar_dados()
-    if caminho == 0:
-        while True:
-            limpar_tela()
-            print('='*40)
-            print(f'{"SENHA MESTRE":^40}')
-            print('='*40)
-            print('[1] Informe a senha\n'
-                  '[2] Esqueceu a senha\n')
-            tracinho()
-            escolha = str(input('Selecione uma opção: '))
-            tracinho()
-            if escolha == '1':
-                senha = maskpass.askpass(prompt='Informe a sua senha: ')
-                verifica_senha_master(email, senha)
-                break
-            elif escolha == '2':
-                redefinir_senha_master(email)
+def controle_pais(email):
+    verificando_senha = Verificacao(email)
+    while True:
+        limpar_tela()
+        print('='*40)
+        print(f'{"SENHA MESTRE":^40}')
+        print('='*40)
+        print('[1] Informe a senha\n'
+                '[2] Esqueceu a senha\n')
+        tracinho()
+        escolha = str(input('Selecione uma opção: '))
+        tracinho()
+        if escolha == '1':
+            verificando_senha.verificar_senha_master()
+            break
+        elif escolha == '2':
+            verificando_senha.redefinir_senha_master()
     while True:
         limpar_tela()
         print('='*40)
@@ -215,7 +213,7 @@ def menu_estudante(email):
             print('FUNCIONALIDADE INDISPONÍVEL NO MOMENTO!')
             sleep(2)
         elif escolha_menu == '5':
-            controle_pais(email, 0)
+            controle_pais(email)
             break
         elif escolha_menu == '6':
             editar_perfil(email)
@@ -239,7 +237,9 @@ def login():
         limpar_tela()
         dados = carregar_dados()
         tracinho()
-        print('Seja bem-vindo ao Ninho Desk🦉\nSeu APP de gerenciamento acadêmico!\nVamos iniciar?')
+        print('Seja bem-vindo ao Ninho Desk🦉\n'
+              'Seu APP de gerenciamento acadêmico!\n'
+              'Vamos iniciar?')
         tracinho()
         print('[1] Login')
         print('[2] Cadastrar novo usuário')
@@ -271,13 +271,14 @@ def login():
                         else:
                             break
                     if escolha == 1:
-                        tracinho()
-                        senha = maskpass.askpass(prompt='Informe a sua senha: ')
-                        verifica_senha(email, senha)
-                        break
+                        validacao.verificar_senha()
+                        menu_estudante(validacao.email)
+                        return
                     elif escolha == 2:
                         tracinho()
-                        redefinir_senha(email)
+                        validacao.redefinir_senha()
+                        menu_estudante(validacao.email)
+                        return
                     else:
                         print('Opção inválida! Tente novamente!')
                 break

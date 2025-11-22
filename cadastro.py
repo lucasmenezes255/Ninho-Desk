@@ -7,12 +7,15 @@ from time import sleep
 from util import limpar_tela, pausa, traco_igual
 from time import sleep
 
+
 def carregar_dados():
-    if not os.path.exists('dados_usuarios.json'): # Em caso de não existir o arquivo, retorna um dicionário vazio
+    # Em caso de não existir o arquivo, retorna um dicionário vazio
+    if not os.path.exists('dados_usuarios.json'):
         return {}
     with open('dados_usuarios.json', 'r', encoding='utf-8') as arquivo:
         dados = json.load(arquivo)
     return dados
+
 class Usuario:
     def __init__(self):
         self.nome = ''
@@ -56,7 +59,7 @@ class Usuario:
                 tracinho()
             else:
                 while not re.fullmatch(formato_padrao, self.email):
-                    print ('\nERRO: Email inválido!')
+                    print('\nERRO: Email inválido!')
                     tracinho()
                     self.email = str(input('\nDigite seu email: '))
                     tracinho()
@@ -78,7 +81,8 @@ class Usuario:
                 pausa()
                 tracinho()
             else:
-                senha_validadora = maskpass.askpass(prompt='Confirme sua senha: ')
+                senha_validadora = maskpass.askpass(
+                    prompt='Confirme sua senha: ')
                 if senha_validadora != self.__senha:
                     print('\nERRO: Senha digitada não correspode, tente novamente!')
                     pausa()
@@ -90,7 +94,8 @@ class Usuario:
     def cadastrar_senha_mestre(self):
         traco_igual()
         while True:
-            self.__senha_mestre = maskpass.askpass(prompt='Digite a senha mestre: ')
+            self.__senha_mestre = maskpass.askpass(
+                prompt='Digite a senha mestre: ')
             tracinho()
             if self.__senha_mestre == '':
                 print('\nERRO: Senha não pode ser vazia!')
@@ -110,7 +115,7 @@ class Usuario:
                     print('\nERRO: Senha digitada não correspode, tente novamente')
                     tracinho()
                 else:
-                    break 
+                    break
         self.cadastrar_serie()
 
     def cadastrar_serie(self):
@@ -122,71 +127,67 @@ class Usuario:
                 print('\nERRO: Informe uma série válida!')
                 tracinho()
             else:
-                if self.serie_crianca <1 or self.serie_crianca>9:
+                if self.serie_crianca < 1 or self.serie_crianca > 9:
                     print('\nERRO: Série inválida!')
                     tracinho()
                 else:
                     break
         self.salvar_dados()
 
-    def salvar_dados(self):
-        dados_usuarios =  carregar_dados() # Carrega os dados existentes para dados_usuarios
-        dados_usuarios[self.email] = {'Nome': self.nome, 'Série da Criança': self.serie_crianca, 'Senha': self.__senha, 'Senha Mestre': self.__senha_mestre} # O email cadastrado é a chave dos dados novos
-        with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
-            json.dump(dados_usuarios, arquivo, indent=4, ensure_ascii=False)
-        print ('\nUsuário cadastrado com sucesso!')
-
-def redefinir_senha_master(email):
-    dados = carregar_dados()
-    while True:
-        nova_senha = maskpass.askpass(prompt='Digite a senha mestre: ')
-        if nova_senha == '':
-            print('\nERRO: Senha não pode ser vazia!')
-        elif len(nova_senha) < 8:
-            print('\nERRO: Senha muito curta, deve ter pelo menos 8 caracteres')
+    def redefinir_senha(self):
+        while True:
+            nova_senha = maskpass.askpass(prompt='Digite sua nova senha: ')
             tracinho()
-        elif not re.search('[a-zA-Z]', nova_senha):
-            print('\nERRO: A senha não possui letras')
-            tracinho()
-        elif not re.search('[0-9]', nova_senha):
-            print('\nERRO: A senha não possui números')
-            tracinho()
-        else:
-            confirma = maskpass.askpass(prompt='Confirme sua senha: ')
-            if confirma!= nova_senha:
-                print('\nERRO: Senha digitada não correspode, tente novamente')
+            if nova_senha == '':
+                print('\nERRO: Senha não pode ser vazia!')
+            elif len(nova_senha) < 8:
+                print(
+                    '\nERRO: Senha muito curta, crie uma senha de pelo menos 8 caracteres')
+            else:
+                nova_senha2 = maskpass.askpass(
+                    prompt='Confirme sua nova senha: ')
+                tracinho()
+                if nova_senha2 != nova_senha:
+                    print('\nERRO: Senha digitada não corresponde, tente novamente')
+                else:
+                    self.__senha = nova_senha
+                    dados_usuarios = carregar_dados()
+                    dados_usuarios[self.email]['Senha'] = self.__senha
+                    with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
+                        json.dump(dados_usuarios, arquivo, indent=4, ensure_ascii=False)
+                    break
+    
+    def redefinir_senha_master(self):
+        while True:
+            nova_senha = maskpass.askpass(prompt='Digite a senha mestre: ')
+            if nova_senha == '':
+                print('\nERRO: Senha não pode ser vazia!')
+            elif len(nova_senha) < 8:
+                print('\nERRO: Senha muito curta, deve ter pelo menos 8 caracteres')
+                tracinho()
+            elif not re.search('[a-zA-Z]', nova_senha):
+                print('\nERRO: A senha não possui letras')
+                tracinho()
+            elif not re.search('[0-9]', nova_senha):
+                print('\nERRO: A senha não possui números')
                 tracinho()
             else:
-                break
-    tracinho()
-    print('Senha redefinida com sucesso')
-    dados[email]['Senha Mestre'] = nova_senha
-    with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
-        json.dump(dados, arquivo, indent=4, ensure_ascii=False)
+                confirmacao = maskpass.askpass(prompt='Confirme sua senha: ')
+                if confirmacao != nova_senha:
+                    print('\nERRO: Senha digitada não correspode, tente novamente')
+                    tracinho()
+                else:
+                    self.__senha_mestre = nova_senha
+                    dados_usuarios = carregar_dados()
+                    dados_usuarios[self.email]['Senha Mestre'] = self.__senha_mestre
+                    with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
+                        json.dump(dados_usuarios, arquivo, indent=4, ensure_ascii=False)
+                    break
 
-def redefinir_senha(email):
-    dados = carregar_dados()
-    while True:
-        nova_senha = maskpass.askpass(prompt='Digite sua nova senha: ')
-        tracinho()
-        if nova_senha == '':
-            print('\nERRO: Senha não pode ser vazia!')
-        elif len(nova_senha) < 8:
-            print('\nERRO: Senha muito curta, crie uma senha de pelo menos 8 caracteres')
-        else:
-            nova_senha2 = maskpass.askpass(prompt='Confirme sua nova senha: ')
-            tracinho()
-            if nova_senha2!= nova_senha:
-                print('\nERRO: Senha digitada não corresponde, tente novamente')
-            else:
-                break    
-    tracinho()
-    print('Senha redefinida com sucesso')
-    tracinho()
-    print('Voltando')
-    dados[email]['Senha'] = nova_senha
-    with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
-        json.dump(dados, arquivo, indent=4, ensure_ascii=False)
-    for i in range(3):
-        print('.')
-        sleep(1)
+    def salvar_dados(self):
+        # Carrega os dados existentes para dados_usuarios
+        dados_usuarios = carregar_dados()
+        dados_usuarios[self.email] = {'Nome': self.nome, 'Série da Criança': self.serie_crianca,'Senha': self.__senha, 'Senha Mestre': self.__senha_mestre}  # O email cadastrado é a chave dos dados novos
+        with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
+            json.dump(dados_usuarios, arquivo, indent=4, ensure_ascii=False)
+        print('\nCadastramento 100% Finalizado!')
