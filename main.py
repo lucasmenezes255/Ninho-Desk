@@ -2,8 +2,8 @@ from cadastro import Usuario
 from cadastro import carregar_dados
 from util import tracinho, limpar_tela, traco_igual
 from time import sleep
-from tarefas import administrar_tarefas, conferir_tarefas, carregar_tarefas
-
+from tarefas import carregar_tarefas
+from tarefas import Tarefas
 from verificacoes import Verificacao
 from lembretes import add_lembretes, ver_lembrete, carregar_lembretes
 from cronograma import ver_cronograma, organizar_cronograma, carregar_cronograma
@@ -27,6 +27,10 @@ def controle_pais(email):
             break
         elif escolha == '2':
             verificando_senha.redefinir_senha_master()
+    menu_controle_pais(email)
+    return
+
+def menu_controle_pais(email):
     while True:
         limpar_tela()
         print('='*40)
@@ -39,7 +43,8 @@ def controle_pais(email):
         tracinho()
         escolha_menu = str(input('Selecione uma opção: '))
         if escolha_menu == '1':
-            administrar_tarefas(email)
+            tarefa = Tarefas(email)
+            tarefa.administrar_tarefas()
             break
         elif escolha_menu == '2':       #Aqui pra redirecionar para as respectivas funções quando estiverem prontas
             organizar_cronograma(email)
@@ -203,7 +208,8 @@ def menu_estudante(email):
         tracinho()
         escolha_menu = str(input('Selecione uma opção: '))
         if escolha_menu == '1':
-            conferir_tarefas(email)
+            tarefa = Tarefas(email)
+            tarefa.conferir_tarefas()
             break
         elif escolha_menu == '2':       #Aqui pra redirecionar para as respectivas funções quando estiverem prontas
             ver_cronograma(email)
@@ -235,7 +241,6 @@ def menu_estudante(email):
 def login():
     while True:
         limpar_tela()
-        dados = carregar_dados()
         tracinho()
         print('Seja bem-vindo ao Ninho Desk🦉\n'
               'Seu APP de gerenciamento acadêmico!\n'
@@ -281,7 +286,6 @@ def login():
                         return
                     else:
                         print('Opção inválida! Tente novamente!')
-                break
             elif escolha == 2:
                 limpar_tela()
                 usuario = Usuario()
@@ -299,7 +303,7 @@ def login():
                 tracinho()
                 print('Ninho Desk🦉')
                 tracinho()
-                break
+                return
             else:
                 print('\nERRO: Opção inválida! Tente novamente!')
                 tracinho()

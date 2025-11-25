@@ -3,10 +3,7 @@ import os
 import re
 import maskpass
 from util import tracinho
-from time import sleep
-from util import limpar_tela, pausa, traco_igual
-from time import sleep
-
+from util import pausa, traco_igual
 
 def carregar_dados():
     # Em caso de não existir o arquivo, retorna um dicionário vazio
