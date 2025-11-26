@@ -1,12 +1,11 @@
-from cadastro import Usuario
-from cadastro import carregar_dados
-from util import tracinho, limpar_tela, traco_igual
+from cadastro import Usuario,carregar_dados
+from util import tracinho, limpar_tela
 from time import sleep
-from tarefas import carregar_tarefas
-from tarefas import Tarefas
+from tarefas import carregar_tarefas, Tarefas
 from verificacoes import Verificacao
 from lembretes import add_lembretes, ver_lembrete, carregar_lembretes
-from cronograma import ver_cronograma, organizar_cronograma, carregar_cronograma
+from cronograma import carregar_cronograma
+from cronograma import Cronograma
 import maskpass
 import json
 
@@ -47,9 +46,12 @@ def menu_controle_pais(email):
             tarefa.administrar_tarefas()
             break
         elif escolha_menu == '2':       #Aqui pra redirecionar para as respectivas funções quando estiverem prontas
-            organizar_cronograma(email)
+            cronograma = Cronograma(email)
+            cronograma.organizar_cronograma()
+            break
         elif escolha_menu == '3':
             add_lembretes(email)
+            break
         elif escolha_menu == '4':
             limpar_tela()
             print('Voltando')
@@ -211,8 +213,10 @@ def menu_estudante(email):
             tarefa = Tarefas(email)
             tarefa.conferir_tarefas()
             break
-        elif escolha_menu == '2':       #Aqui pra redirecionar para as respectivas funções quando estiverem prontas
-            ver_cronograma(email)
+        elif escolha_menu == '2':      #Aqui pra redirecionar para as respectivas funções quando estiverem prontas
+            cronograma = Cronograma(email)
+            cronograma.ver_cronograma()
+            break
         elif escolha_menu == '3':
             ver_lembrete(email)
         elif escolha_menu == '4':
@@ -232,7 +236,7 @@ def menu_estudante(email):
                 sleep(1)
             limpar_tela()
             login()
-            break
+            return
         else:
             tracinho()
             print ('Opção inválida! Tente novamente')

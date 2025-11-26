@@ -77,6 +77,7 @@ def ver_lembrete(email):
                 lista_lembretes(email)
             elif escolha == '2':
                 add_lembretes(email)
+                sleep(1)
             elif escolha == '3':
                 limpar_tela()
                 print('Saindo')
@@ -86,7 +87,7 @@ def ver_lembrete(email):
                 limpar_tela()
                 from main import menu_estudante
                 menu_estudante(email)
-                break
+                return
             else:
                 tracinho()
                 print ('Opção inválida! Tente novamente')

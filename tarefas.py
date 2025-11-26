@@ -423,4 +423,3 @@ class Tarefas:
                     return
                 else:
                     print('ERRO! Escolha inválida')
-            
