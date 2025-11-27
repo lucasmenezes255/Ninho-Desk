@@ -1,13 +1,15 @@
 from util import limpar_tela, tracinho
 from time import sleep
-from cadastro import carregar_dados
-from cadastro import Usuario
+from cadastro import carregar_dados, Usuario
 import maskpass
 
 class Verificacao(Usuario):
     def __init__(self, email):
         self.email = email
-    
+
+    def __repr__(self):
+        return f"{self.email}"
+     
     def verifica_email_login(self):
         dados = carregar_dados()
         while True:

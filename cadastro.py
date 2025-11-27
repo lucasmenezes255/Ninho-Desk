@@ -2,8 +2,7 @@ import json
 import os
 import re
 import maskpass
-from util import tracinho
-from util import pausa, traco_igual
+from util import tracinho, pausa, traco_igual
 
 def carregar_dados():
     # Em caso de não existir o arquivo, retorna um dicionário vazio
@@ -60,7 +59,7 @@ class Usuario:
                     tracinho()
                     self.email = str(input('\nDigite seu email: '))
                     tracinho()
-                    self.email = self.verificar_email()
+                    self.email = self.validar_email()
                     break
                 break
         self.cadastrar_senha()

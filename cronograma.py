@@ -2,7 +2,7 @@ from tarefas import carregar_tarefas
 from datetime import datetime
 from util import limpar_tela, tracinho
 from time import sleep
-from lembretes import ver_lembrete
+from lembretes import Lembrete
 import json
 import os
 
@@ -12,7 +12,7 @@ def carregar_cronograma():
     with open('cronograma.json', 'r', encoding='utf-8') as arquivo:
         dados = json.load(arquivo)
     return dados
-class Cronograma:
+class Cronograma(Lembrete):
     def __init__(self, email):
         self.email = email
 
@@ -82,7 +82,7 @@ class Cronograma:
                     for i in range(3):
                         print('.')
                         sleep(1)
-                    ver_lembrete(self.email)
+                    self.ver_lembrete()
                     return
                 elif escolha == '2':
                     limpar_tela()
