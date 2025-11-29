@@ -1,25 +1,26 @@
 from cadastro import Usuario,carregar_dados
-from util import tracinho, limpar_tela
+from util import Util
 from time import sleep
 from tarefas import carregar_tarefas, Tarefas
 from verificacoes import Verificacao
 from lembretes import carregar_lembretes, Lembrete
 from cronograma import carregar_cronograma, Cronograma
+from notas import Notas
 import json
 import re
 
 def controle_pais(email):
     verificando_senha = Verificacao(email)
     while True:
-        limpar_tela()
+        Util.limpar_tela()
         print('='*40)
         print(f'{"SENHA MESTRE":^40}')
         print('='*40)
         print('[1] Informe a senha\n'
                 '[2] Esqueceu a senha\n')
-        tracinho()
+        Util.tracinho()
         escolha = str(input('Selecione uma opção: '))
-        tracinho()
+        Util.tracinho()
         if escolha == '1':
             verificando_senha.verificar_senha_master()
             break
@@ -30,15 +31,16 @@ def controle_pais(email):
 
 def menu_controle_pais(email):
     while True:
-        limpar_tela()
+        Util.limpar_tela()
         print('='*40)
         print(f'{"CONTROLE DOS PAIS":^40}')
         print('='*40)
         print('[1] Administrar Tarefas\n'
-              '[2] Organizar Cronograma\n'
-              '[3] Criar Lembretes\n'
-              '[4] Voltar para o Menu\n')
-        tracinho()
+              '[2] Organizar Cronograma\n' 
+              '[3] Editar quadro de notas\n'
+              '[4] Criar Lembretes\n'
+              '[5] Voltar para o Menu\n')
+        Util.tracinho()
         escolha_menu = str(input('Selecione uma opção: '))
         if escolha_menu == '1':
             tarefa = Tarefas(email)
@@ -49,10 +51,14 @@ def menu_controle_pais(email):
             cronograma.organizar_cronograma()
             break
         elif escolha_menu == '3':
+            notas = Notas(email)
+            notas.editar_notas()
+        elif escolha_menu == '4':
             lembrete = Lembrete(email)
             lembrete.add_lembretes()
-        elif escolha_menu == '4':
-            limpar_tela()
+            break
+        elif escolha_menu == '5':
+            Util.limpar_tela()
             print('Voltando')
             for i in range(3):
                 print('.')
@@ -61,37 +67,39 @@ def menu_controle_pais(email):
             menu_estudante(email)
             break
         else:
-            tracinho()
+            Util.tracinho()
             print ('Opção inválida! Tente novamente')
             sleep(1)
 
 class Edicao(Verificacao):
-    def __init__(self, email, nome, serie):
+    def __init__(self, email, nome, serie, senha, senha_mestre):
         self.email = email
         self.nome = nome
         self.serie = serie
+        self.__senha = senha
+        self.__senha_mestre = senha_mestre
         
     def editar_perfil(self):    # Aqui o usuário pode alterar os dados do seu perfil
         while True:
             dados = carregar_dados()
-            limpar_tela()
+            Util.limpar_tela()
             print('='*40)
             print(f'{"MENU DE EDIÇÕES":^40}')
             print('='*40)
-            print('[1] Editar Email\n'
+            print('[1] Editar Email (Reinicialização após finalizar a operação)\n'
                 '[2] Editar Nome de Usuário\n'
                 '[3] Editar Senha\n'
                 '[4] Editar Série da Criança\n' 
                 '[5] Apagar perfil\n' 
                 '[6] Voltar para o Menu do Estudante')
-            tracinho()
+            Util.tracinho()
             escolha_menu = str(input('Selecione uma opção: \n'))
 
             if escolha_menu == '1':
                 tarefas = carregar_tarefas(self.email)
                 lembrete = carregar_lembretes()
                 cronograma = carregar_cronograma()
-                tracinho()
+                Util.tracinho()
                 novo_email = str(input('Digite seu novo email: '))
                 novo_email = validar_email(novo_email)
                 dados[novo_email] = dados[self.email]
@@ -115,24 +123,24 @@ class Edicao(Verificacao):
                     del lembrete[self.email]
                     with open('lembretes.json', 'w', encoding='utf-8') as arquivo:
                         json.dump(lembrete, arquivo, indent=4, ensure_ascii=False)
-                tracinho()
+                Util.tracinho()
                 sleep(1)
-                self.editar_perfil()
+                login()
                 break
                 
             elif escolha_menu == '2':
-                tracinho()   
+                Util.tracinho()   
                 while True:
                     novo_user = str(input('Digite seu novo nome: ')).strip()
                     if novo_user == '':
                         print('Nome não pode ser vazio!')
-                        tracinho()
+                        Util.Util.tracinho()
                     elif ' ' in novo_user[0]:
                         print('Nome não pode ser vazio!')
-                        tracinho()
+                        Util.tracinho()
                     elif novo_user[0] in '0123456789':
                         print('Nome não pode ser começar com números!')
-                        tracinho()
+                        Util.tracinho()
                     else:
                         break
                 dados[self.email]['Nome'] = novo_user
@@ -142,17 +150,18 @@ class Edicao(Verificacao):
                 sleep(1)
 
             elif escolha_menu == '3':
-                tracinho()
+                Util.tracinho()
                 dados = carregar_dados()
                 self.redefinir_senha()
                 sleep(1)
                 
             elif escolha_menu == '4':
-                tracinho()
+                Util.tracinho()
                 dados = carregar_dados()
-                nova_serie = self.cadastrar_serie()
+                nova_serie = int(input('Digite a série da criança: '))
+                nova_serie = self.verificando_serie(nova_serie)
                 dados[self.email]['Série da Criança'] = nova_serie
-                tracinho()
+                Util.tracinho()
                 with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
                     json.dump(dados, arquivo, indent=4, ensure_ascii=False)
                 print('Série alterada com sucesso')
@@ -162,7 +171,7 @@ class Edicao(Verificacao):
                 tarefas = carregar_tarefas(self.email)
                 lembrete = carregar_lembretes()
                 cronograma = carregar_cronograma()
-                tracinho()
+                Util.tracinho()
                 if self.email in tarefas:
                     del tarefas[self.email]
                     with open('dados_tarefas.json', 'w', encoding='utf-8') as arquivo:
@@ -179,13 +188,13 @@ class Edicao(Verificacao):
                     del dados[self.email]
                     with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
                         json.dump(dados, arquivo, indent=4, ensure_ascii=False)
-                tracinho()
+                Util.tracinho()
                 print('Apagando...\n')
                 sleep(3)
                 login()
                 return
             elif escolha_menu == '6':
-                limpar_tela()
+                Util.limpar_tela()
                 print('Voltando')
                 for i in range(3):
                     print('.')
@@ -194,10 +203,25 @@ class Edicao(Verificacao):
                 menu_estudante(self.email)
                 break
             else:
-                tracinho()
+                Util.tracinho()
                 print ('\nERRO: Opção inválida! Tente novamente')
                 sleep(1)
-        
+
+    @staticmethod
+    def verificando_serie(serie):
+        while True:
+            if serie < 1 or serie > 9:
+                print('\nERRO: Série inválida!')
+                Util.tracinho()
+                try:
+                    serie = int(input('Digite a série da criança: '))
+                except:
+                    print('\nERRO: Informe uma série válida!')
+                    Util.tracinho()
+            else:
+                return serie
+
+
 def validar_email(email):
     dados = carregar_dados()
     formato_padrao = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
@@ -205,18 +229,18 @@ def validar_email(email):
         if email in dados:
             print('\nERRO: Email já cadastrado! Tente novamente')
             email = str(input('Digite seu email: '))
-            tracinho()
+            Util.tracinho()
         elif not re.fullmatch(formato_padrao, email):
                 print('\nERRO: Email inválido!')
-                tracinho()
+                Util.tracinho()
                 email = str(input('\nDigite seu email: '))
-                tracinho()
+                Util.tracinho()
         else:
             return email
 
 def menu_estudante(email):
     while True:
-        limpar_tela()
+        Util.limpar_tela()
         print('='*40)
         print(f'{"MENU DO ESTUDANTE":^40}')
         print('='*40)
@@ -224,10 +248,11 @@ def menu_estudante(email):
             '[2] Ver Cronograma\n'
             '[3] Ver Lembretes\n'
             '[4] Pet Virtual\n'
-            '[5] Controle dos Pais\n'
-            '[6] Editar Perfil\n' \
-            '[7] Sair')
-        tracinho()
+            '[5] Controle dos Pais\n' 
+            '[6] Ver notas\n'
+            '[7] Editar Perfil\n' 
+            '[8] Sair')
+        Util.tracinho()
         escolha_menu = str(input('Selecione uma opção: '))
         if escolha_menu == '1':
             tarefa = Tarefas(email)
@@ -248,57 +273,60 @@ def menu_estudante(email):
             controle_pais(email)
             break
         elif escolha_menu == '6':
+            notas = Notas(email)
+            notas.exibir_notas_menu_estudante()
+        elif escolha_menu == '7':
             dado_usuario = carregar_dados()
             edita = dado_usuario[email]
-            edita = Edicao(email, edita["Nome"], edita["Série da Criança"])
+            edita = Edicao(email, edita["Nome"], edita["Série da Criança"], edita["Senha"], edita["Senha Mestre"])
             edita.editar_perfil()
             break
-        elif escolha_menu == '7':
-            limpar_tela()
+        elif escolha_menu == '8':
+            Util.limpar_tela()
             print('Saindo')
             for i in range(3):
                 print('.')
                 sleep(1)
-            limpar_tela()
+            Util.limpar_tela()
             login()
             return
         else:
-            tracinho()
+            Util.tracinho()
             print ('Opção inválida! Tente novamente')
             sleep(1)
     
 def login():
     while True:
-        limpar_tela()
-        tracinho()
+        Util.limpar_tela()
+        Util.tracinho()
         print('Seja bem-vindo ao Ninho Desk🦉\n'
               'Seu APP de gerenciamento acadêmico!\n'
               'Vamos iniciar?')
-        tracinho()
+        Util.tracinho()
         print('[1] Login')
         print('[2] Cadastrar novo usuário')
         print('[3] Sair')
         try:
-            tracinho()
+            Util.tracinho()
             escolha = int(input('Escolha uma opção: '))
         except:
             print('\nERRO: Opção inválida! Tente novamente!')
-            tracinho()
+            Util.tracinho()
             sleep(1)
         else:
             if escolha == 1:
-                limpar_tela()
-                tracinho()
+                Util.limpar_tela()
+                Util.tracinho()
                 email = str(input('Informe o email de login: '))
                 validacao = Verificacao(email)
                 validacao.verifica_email_login()
                 while True:
-                    tracinho()
+                    Util.tracinho()
                     print('[1] Informe a senha')
                     print('[2] Esqueceu a senha')
                     while True:
                         try:
-                            tracinho()
+                            Util.tracinho()
                             escolha = int(input('Escolha uma opção acima: '))
                         except:
                             print('Opção inválida! Tente novamente!')
@@ -309,33 +337,33 @@ def login():
                         menu_estudante(validacao.email)
                         return
                     elif escolha == 2:
-                        tracinho()
+                        Util.tracinho()
                         validacao.redefinir_senha()
                         menu_estudante(validacao.email)
                         return
                     else:
                         print('Opção inválida! Tente novamente!')
             elif escolha == 2:
-                limpar_tela()
+                Util.limpar_tela()
                 usuario = Usuario()
                 usuario.validar_username()
                 login()
                 break
             elif escolha == 3:
-                limpar_tela()
-                tracinho()
+                Util.limpar_tela()
+                Util.tracinho()
                 print('Nos despedimos por aqui, até a próxima!')
                 sleep(1)
                 for i in range(3):
                     print('.')
                     sleep(1)
-                tracinho()
+                Util.tracinho()
                 print('Ninho Desk🦉')
-                tracinho()
+                Util.tracinho()
                 return
             else:
                 print('\nERRO: Opção inválida! Tente novamente!')
-                tracinho()
+                Util.tracinho()
                 sleep(1)
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@ import json
 import os
 import re
 import maskpass
-from util import tracinho, pausa, traco_igual
+from util import Util
 
 def carregar_dados():
     # Em caso de não existir o arquivo, retorna um dicionário vazio
@@ -19,26 +19,27 @@ class Usuario:
         self.serie_crianca = ''
         self.__senha = ''
         self.__senha_mestre = ''
+        self.continuar = False
 
     def validar_username(self):
-        tracinho()
+        Util.tracinho()
         self.nome = str(input('Insira o seu nome: '))
         while True:
             if self.nome == '' or ' ' in self.nome[0]:
                 print('\nERRO: Nome não pode ser vazio!')
-                tracinho()
+                Util.tracinho()
                 self.nome = str(input('Insira o seu nome: '))
             elif self.nome[0] in '_-@!#%&*{[]}().':
                 print('\nERRO: Nome não pode começar com caractere especial!')
-                tracinho()
+                Util.tracinho()
                 self.nome = str(input('Insira o seu nome: '))
             elif '@#$%&*({[]})' in self.nome:
                 print('\nERRO: Nome só pode conter (-_.) como caractere especial!')
-                tracinho()
+                Util.tracinho()
                 self.nome = str(input('Insira o seu nome: '))
             elif self.nome[0] in '0123456789':
                 print('\nNome não pode ser começar com números!')
-                tracinho()
+                Util.tracinho()
                 self.nome = str(input('Insira o seu nome: '))
             else:
                 break
@@ -52,13 +53,13 @@ class Usuario:
             if self.email in dados:
                 print('\nERRO: Email já cadastrado! Tente novamente')
                 self.email = str(input('Digite seu email: '))
-                tracinho()
+                Util.tracinho()
             else:
                 while not re.fullmatch(formato_padrao, self.email):
                     print('\nERRO: Email inválido!')
-                    tracinho()
+                    Util.tracinho()
                     self.email = str(input('\nDigite seu email: '))
-                    tracinho()
+                    Util.tracinho()
                     self.email = self.validar_email()
                     break
                 break
@@ -67,73 +68,73 @@ class Usuario:
     def cadastrar_senha(self):
         while True:
             self.__senha = maskpass.askpass(prompt='Digite sua senha: ')
-            tracinho()
+            Util.tracinho()
             if self.__senha == '':
                 print('\nERRO: Senha não pode ser vazia!')
-                pausa()
-                tracinho()
+                Util.pausa()
+                Util.tracinho()
             elif len(self.__senha) < 8:
                 print('\nERRO: Senha muito curta, deve ter pelo menos 8 caracteres!')
-                pausa()
-                tracinho()
+                Util.pausa()
+                Util.tracinho()
             else:
                 senha_validadora = maskpass.askpass(
                     prompt='Confirme sua senha: ')
                 if senha_validadora != self.__senha:
                     print('\nERRO: Senha digitada não correspode, tente novamente!')
-                    pausa()
-                    tracinho()
+                    Util.pausa()
+                    Util.tracinho()
                 else:
                     break
         self.cadastrar_senha_mestre()
 
     def cadastrar_senha_mestre(self):
-        traco_igual()
+        Util.traco_igual()
         while True:
             self.__senha_mestre = maskpass.askpass(
                 prompt='Digite a senha mestre: ')
-            tracinho()
+            Util.tracinho()
             if self.__senha_mestre == '':
                 print('\nERRO: Senha não pode ser vazia!')
-                tracinho()
+                Util.tracinho()
             elif len(self.__senha_mestre) < 8:
                 print('\nERRO: Senha muito curta, deve ter pelo menos 9 caracteres!')
-                tracinho()
+                Util.tracinho()
             elif not re.search('[a-zA-Z]', self.__senha_mestre):
                 print('\nERRO: A senha não possui letras')
-                tracinho()
+                Util.tracinho()
             elif not re.search('[0-9]', self.__senha_mestre):
                 print('\nERRO: A senha não possui números')
-                tracinho()
+                Util.tracinho()
             else:
                 confirmacao = maskpass.askpass(prompt='Confirme sua senha: ')
                 if confirmacao != self.__senha_mestre:
                     print('\nERRO: Senha digitada não correspode, tente novamente')
-                    tracinho()
+                    Util.tracinho()
                 else:
                     break
         self.cadastrar_serie()
 
     def cadastrar_serie(self):
-        traco_igual()
+        Util.traco_igual()
         while True:
             try:
                 self.serie_crianca = int(input('Digite a série da criança: '))
             except:
                 print('\nERRO: Informe uma série válida!')
-                tracinho()
+                Util.tracinho()
             else:
                 if self.serie_crianca < 1 or self.serie_crianca > 9:
                     print('\nERRO: Série inválida!')
-                    tracinho()
+                    Util.tracinho()
                 else:
                     break
-        self.salvar_dados()
-
+        self.continuar = True
+        
     def redefinir_senha(self):
         while True:
             nova_senha = maskpass.askpass(prompt='Digite sua nova senha: ')
-            tracinho()
+            Util.tracinho()
             if nova_senha == '':
                 print('\nERRO: Senha não pode ser vazia!')
             elif len(nova_senha) < 8:
@@ -142,7 +143,7 @@ class Usuario:
             else:
                 nova_senha2 = maskpass.askpass(
                     prompt='Confirme sua nova senha: ')
-                tracinho()
+                Util.tracinho()
                 if nova_senha2 != nova_senha:
                     print('\nERRO: Senha digitada não corresponde, tente novamente')
                 else:
@@ -160,18 +161,18 @@ class Usuario:
                 print('\nERRO: Senha não pode ser vazia!')
             elif len(nova_senha) < 8:
                 print('\nERRO: Senha muito curta, deve ter pelo menos 8 caracteres')
-                tracinho()
+                Util.tracinho()
             elif not re.search('[a-zA-Z]', nova_senha):
                 print('\nERRO: A senha não possui letras')
-                tracinho()
+                Util.tracinho()
             elif not re.search('[0-9]', nova_senha):
                 print('\nERRO: A senha não possui números')
-                tracinho()
+                Util.tracinho()
             else:
                 confirmacao = maskpass.askpass(prompt='Confirme sua senha: ')
                 if confirmacao != nova_senha:
                     print('\nERRO: Senha digitada não correspode, tente novamente')
-                    tracinho()
+                    Util.tracinho()
                 else:
                     self.__senha_mestre = nova_senha
                     dados_usuarios = carregar_dados()
@@ -182,8 +183,9 @@ class Usuario:
 
     def salvar_dados(self):
         # Carrega os dados existentes para dados_usuarios
-        dados_usuarios = carregar_dados()
-        dados_usuarios[self.email] = {'Nome': self.nome, 'Série da Criança': self.serie_crianca,'Senha': self.__senha, 'Senha Mestre': self.__senha_mestre}  # O email cadastrado é a chave dos dados novos
-        with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
-            json.dump(dados_usuarios, arquivo, indent=4, ensure_ascii=False)
-        print('\nCadastramento 100% Finalizado!')
+        if self.continuar == True:
+            dados_usuarios = carregar_dados()
+            dados_usuarios[self.email] = {'Nome': self.nome, 'Série da Criança': self.serie_crianca,'Senha': self.__senha, 'Senha Mestre': self.__senha_mestre}  # O email cadastrado é a chave dos dados novos
+            with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
+                json.dump(dados_usuarios, arquivo, indent=4, ensure_ascii=False)
+            print('\nCadastramento 100% Finalizado!')

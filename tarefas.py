@@ -1,4 +1,4 @@
-from util import limpar_tela, tracinho
+from util import Util
 from os import path
 from time import sleep
 from rich.table import Table
@@ -31,7 +31,7 @@ class Tarefas:
 
     def conferir_tarefas(self):
         tarefas = carregar_tarefas(self.email)
-        limpar_tela()
+        Util.limpar_tela()
         task = tarefas[self.email]
         for index, status in enumerate(task): 
                 for indice, prioridade in enumerate(task[status]): 
@@ -40,7 +40,7 @@ class Tarefas:
                             f'Descrição: {task[status][prioridade][quant_task]["Descrição"]}\n   ' \
                             f'Data: {task[status][prioridade][quant_task]["Data"]}\n   ' \
                             f'Prioridade: {task[status][prioridade][quant_task]["Prioridade"]}')
-                        tracinho()  
+                        Util.tracinho()  
                         break
         print('='*40)
         print(f'{"LISTA DE TAREFAS":^40}')
@@ -48,16 +48,16 @@ class Tarefas:
         print('[1] Tarefas Pendentes\n'
             '[2] Tarefas Concluídas\n' 
             '[3] Sair')
-        tracinho()
+        Util.tracinho()
         while True:
             escolha = str(input('Escolha uma opção: ')).strip()
             contador_tarefa = task['Pendente']
             if escolha == '1':
-                limpar_tela()
+                Util.limpar_tela()
                 if (len(contador_tarefa['ALTA'] + contador_tarefa['MEDIA'] + contador_tarefa['BAIXA'] + contador_tarefa['SEM PRIORIDADE'])) == 0:
-                    tracinho()
+                    Util.tracinho()
                     print('Sem tarefas disponíveis!')
-                    tracinho()
+                    Util.tracinho()
                 else:
                     print('='*40)
                     print(f'{"TAREFAS PENDENTES":^40}')
@@ -68,22 +68,22 @@ class Tarefas:
                                 f'Descrição: {task["Pendente"][prioridade][quant_task]["Descrição"]}\n   ' 
                                 f'Data: {task["Pendente"][prioridade][quant_task]["Data"]}\n   '
                                 f'Prioridade: {task["Pendente"][prioridade][quant_task]["Prioridade"]}')
-                            tracinho()
+                            Util.tracinho()
                     while True:
                         escolha = str(input('Marcar uma tarefa como concluída [S/N]: ')).upper().strip()
                         if escolha == '' or escolha == ' ':
                             print('ERRO: Campo vazio! Tente novamente\n')
-                            tracinho()
+                            Util.tracinho()
                         elif not escolha in ['S', 'N']:
                             print('ERRO: Operação inválida! Tente novamente\n')
-                            tracinho()
+                            Util.tracinho()
                         else:
                             if escolha == 'S':
                                 while True:
                                     titulo_tarefa = str(input('Informe o título da tarefa a ser concluída: ')).strip()
                                     if titulo_tarefa == '' or titulo_tarefa == ' ':
                                         print('ERRO: Campo vazio! Tente novamente\n')
-                                        tracinho()
+                                        Util.tracinho()
                                     else:
                                         tarefa_inexistente = 0
                                         for indice, prioridade in enumerate(task["Pendente"]): 
@@ -100,7 +100,7 @@ class Tarefas:
                                                 
                                         if tarefa_inexistente == 0:
                                             print('ERRO: Tarefa inexistente! Tente novamente\n')
-                                            tracinho()
+                                            Util.tracinho()
                                         else:
                                             break
                             elif escolha == 'N':
@@ -108,11 +108,11 @@ class Tarefas:
                 break
             elif escolha == '2':
                 contador_tarefa = task['Concluída']
-                limpar_tela()
+                Util.limpar_tela()
                 if (len(contador_tarefa['ALTA'] + contador_tarefa['MEDIA'] + contador_tarefa['BAIXA'] + contador_tarefa['SEM PRIORIDADE'])) == 0:
-                    tracinho()
+                    Util.tracinho()
                     print('Sem tarefas disponíveis!')
-                    tracinho()
+                    Util.tracinho()
                 else:
                     print('='*40)
                     print(f'{"TAREFAS CONCLUÍDAS":^40}')
@@ -123,7 +123,7 @@ class Tarefas:
                                 f'Descrição: {task["Concluída"][prioridade][quant_task]["Descrição"]}\n   ' \
                                 f'Data: {task["Concluída"][prioridade][quant_task]["Data"]}\n   ' \
                                 f'Prioridade: {task["Concluída"][prioridade][quant_task]["Prioridade"]}')
-                            tracinho()  
+                            Util.tracinho()  
                             break
                 break
             elif escolha == '3':
@@ -132,19 +132,19 @@ class Tarefas:
                 return
             else:
                 print('ERRO! Informe um dígito válida')
-                tracinho()
+                Util.tracinho()
         while True:
-            tracinho()
+            Util.tracinho()
             if input('\nTecle "ENTER" para voltar para o menu ') == "":
                 self.conferir_tarefas()
                 break
             else:
                 print('ERRO! Tecla errada')
-                tracinho()
+                Util.tracinho()
 
     def administrar_tarefas(self):
         while True:
-            limpar_tela()
+            Util.limpar_tela()
             tarefas = carregar_tarefas(self.email)
             print('='*40)
             print(f'{" TAREFAS ":^40}')
@@ -152,7 +152,7 @@ class Tarefas:
             print('[1] Criar Nova Tarefa\n'
                 '[2] Editar Tarefa\n'
                 '[3] Sair\n')
-            tracinho()
+            Util.tracinho()
 
             escolha = str(input('Selecione uma opção: ')).strip()
             if escolha == '1':
@@ -160,14 +160,14 @@ class Tarefas:
                     titulo = str(input('Informe o título da tarefa: ')).strip()
                     if titulo == "":
                         print('ERRO! O título não pode ser vazio')
-                        tracinho()
+                        Util.tracinho()
                     else:
                         break
                 while True:
                     descricao = str(input('Informe os detalhes da tarefa: ')).strip()
                     if descricao == "" or ' ' in descricao[0]:
                         print('ERRO! A descrição não pode ser vazia')
-                        tracinho()
+                        Util.tracinho()
                     else:
                         break
 
@@ -195,7 +195,7 @@ class Tarefas:
                         '[2] Média\n'
                         '[3] Baixa\n'
                         '[4] Sem prioridade\n')
-                    tracinho()
+                    Util.tracinho()
                     escolha = str(input('Informe a prioridadea da tarefa: ')).strip()
                     if escolha == '1':
                         prioridade = 'ALTA'
@@ -211,11 +211,11 @@ class Tarefas:
                         break
                     else:
                         print('ERRO! Informe um dígito válida')
-                        tracinho()
+                        Util.tracinho()
                 tarefas[self.email]['Pendente'][prioridade].append({'Título': titulo, 'Descrição': descricao, 'Data': data_prazo, 'Prioridade': prioridade})
                 with open('dados_tarefas.json', 'w', encoding='utf-8') as arquivo:
                     json.dump(tarefas, arquivo, indent=4, ensure_ascii=False)
-                tracinho()
+                Util.tracinho()
                 print('Tarefa adiciona com sucesso na aba Pendente!')
                 sleep(1)
                 while True:
@@ -224,7 +224,7 @@ class Tarefas:
                         break
                     else:
                         print('ERRO! Tecla errada')
-                        tracinho()
+                        Util.tracinho()
                 from main import menu_controle_pais
                 menu_controle_pais(self.email)
                 break
@@ -237,15 +237,15 @@ class Tarefas:
                 break
             else:
                 print('ERRO! Informe um dígito válida')
-                tracinho()
+                Util.tracinho()
 
     def editar_tarefas(self):
-        limpar_tela()
+        Util.limpar_tela()
         tarefas = carregar_tarefas(self.email)
         print('='*40)
         print(f'{"LISTA DE TAREFAS":^40}')
         print('='*40)
-        tracinho()
+        Util.tracinho()
         task = tarefas[self.email]
         quantidade_task = len(task['Pendente']) + len(task['Concluída'])
         if quantidade_task == 0:
@@ -262,7 +262,7 @@ class Tarefas:
                             f'Descrição: {task[status][prioridade][quant_task]["Descrição"]}\n   ' 
                             f'Data: {task[status][prioridade][quant_task]["Data"]}\n   ' 
                             f'Prioridade: {task[status][prioridade][quant_task]["Prioridade"]}')
-                        tracinho()  
+                        Util.tracinho()  
                         break
                         
             console = Console()
@@ -317,12 +317,12 @@ class Tarefas:
                                     f'Descrição: {task[status][prioridade][quant_task]["Descrição"]}\n   ' \
                                     f'Data: {task[status][prioridade][quant_task]["Data"]}\n   ' \
                                     f'Prioridade: {task[status][prioridade][quant_task]["Prioridade"]}')
-                                tracinho()  
+                                Util.tracinho()  
                                 if task[status][prioridade][quant_task]["Título"] == titulo_tarefa:
                                     tarefa_copiada = task[status][prioridade][quant_task]
                                     task[status][nova_prioridade].append(tarefa_copiada)
                                     del tarefas[self.email][status][prioridade][quant_task]
-                    tracinho()
+                    Util.tracinho()
                     print('Tarefa movida com sucesso!')
                     with open('dados_tarefas.json', 'w', encoding='utf-8') as arquivo:
                         json.dump(tarefas, arquivo, indent=4, ensure_ascii=False)
@@ -334,7 +334,7 @@ class Tarefas:
                             for quant_task in range(0, len(task[status][prioridade])):
                                 if task[status][prioridade][quant_task]["Título"] == titulo_tarefa:
                                     del tarefas[self.email][status][prioridade][quant_task]
-                                    tracinho()
+                                    Util.tracinho()
                                     print('Tarefa apagada com sucesso!')
                                     break
                     with open('dados_tarefas.json', 'w', encoding='utf-8') as arquivo:
@@ -345,7 +345,7 @@ class Tarefas:
                         titulo_tarefa = str(input('Informe o título da tarefa a ser concluída: ')).strip()
                         if titulo_tarefa == '' or titulo_tarefa == ' ':
                             print('ERRO: Campo vazio! Tente novamente\n')
-                            tracinho()
+                            Util.tracinho()
                         else:
                             tarefa_inexistente = 0
                             for index, status in enumerate(task): 
@@ -356,10 +356,10 @@ class Tarefas:
 
                             if tarefa_inexistente == 0:
                                 print('ERRO: Tarefa inexistente! Tente novamente\n')
-                                tracinho()
+                                Util.tracinho()
                             else:
                                 break
-                    limpar_tela()
+                    Util.limpar_tela()
                     print('='*40)
                     print(f'{"MENU DE EDIÇÕES":^40}')
                     print('='*40)
@@ -384,11 +384,11 @@ class Tarefas:
                                     if escolha == 1:
                                         novo_titulo = str(input('Informe o novo título: ')).strip()
                                         task[status][prioridade][quant_task]["Título"] = novo_titulo
-                                        limpar_tela()
+                                        Util.limpar_tela()
                                     elif escolha == 2:
                                         nova_descricao = str(input('Informe a nova descrição da tarefa: ')).strip()
                                         task[status][prioridade][quant_task]["Descrição"] = nova_descricao
-                                        limpar_tela()
+                                        Util.limpar_tela()
                                     elif escolha == 3:
                                         while True:
                                             formato_padrao = r'\d{2}/\d{2}/\d{4}'
@@ -407,13 +407,13 @@ class Tarefas:
                                                 print('\nERRO: Data inexistente! Digite novamente')
                                         
                                         task[status][prioridade][quant_task]["Data"] = novo_prazo
-                                        limpar_tela()
+                                        Util.limpar_tela()
                                     elif escolha == 4:
-                                        limpar_tela()
+                                        Util.limpar_tela()
                                         self.editar_tarefas()
                                         break
 
-                    tracinho()
+                    Util.tracinho()
                     print('Tarefa movida com sucesso!')
                     with open('dados_tarefas.json', 'w', encoding='utf-8') as arquivo:
                         json.dump(tarefas, arquivo, indent=4, ensure_ascii=False)

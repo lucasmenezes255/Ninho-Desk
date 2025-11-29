@@ -1,4 +1,4 @@
-from util import limpar_tela, tracinho
+from util import Util
 from time import sleep
 import json
 import os
@@ -16,12 +16,12 @@ class Lembrete:
 
     def ver_lembrete(self):
         while True:
-            limpar_tela()
-            tracinho()
+            Util.limpar_tela()
+            Util.tracinho()
             print('[1] Acessar lista de lembretes\n'
                 '[2] Adicionar lembretes\n'
                 '[3] Voltar ao Menu do Estudante')
-            tracinho()
+            Util.tracinho()
             escolha = input('Selecione uma opção: ')
             if escolha == '1':
                 self.lista_lembretes()
@@ -30,17 +30,17 @@ class Lembrete:
                 self.add_lembretes()
                 sleep(1)
             elif escolha == '3':
-                limpar_tela()
+                Util.limpar_tela()
                 print('Saindo')
                 for i in range(3):
                     print('.')
                     sleep(1)
-                limpar_tela()
+                Util.limpar_tela()
                 from main import menu_estudante
                 menu_estudante(self.email)
                 return
             else:
-                tracinho()
+                Util.tracinho()
                 print ('Opção inválida! Tente novamente')
                 sleep(1)
 
@@ -48,14 +48,14 @@ class Lembrete:
     def add_lembretes(self):
         while True:
             tit_lembrete = input('Digite o título do lembrete a ser adicionado: ').strip()
-            tracinho()
+            Util.tracinho()
             if tit_lembrete == '' or  ' ' in tit_lembrete[0]:
                 print('\nERRO: Título não pode ser vazio!')
             else:
                 break
         while True:
             desc_lembrete = input('Digite a descrição do lembrete: ').strip()
-            tracinho()
+            Util.tracinho()
             if desc_lembrete == '' or  ' ' in desc_lembrete[0]:
                 print('\nERRO: Descrição não pode ser vazio!')
             else:
@@ -75,27 +75,27 @@ class Lembrete:
     def lista_lembretes(self):
         lembretes = carregar_lembretes()
         if self.email not in lembretes or len(lembretes)==0:
-            limpar_tela()
-            tracinho()
+            Util.limpar_tela()
+            Util.tracinho()
             print('Nenhum lembrete definido!')
             while True:
-                tracinho()
+                Util.tracinho()
                 if input('\nTecle "ENTER" para voltar para o menu ') == "":
                     self.ver_lembrete()
                     break
                 else:
                     print('ERRO! Tecla errada')
-                    tracinho()
+                    Util.tracinho()
         elif len(lembretes) >= 1:
-            tracinho()
+            Util.tracinho()
             print('Seus lembretes:')
             for i, lembrete in enumerate (lembretes[self.email], start=1):
                 print(f'\n {[i]} {lembrete["Título"]}:\n{lembrete["Descrição"]}')
             while True:
-                tracinho()
+                Util.tracinho()
                 if input('\nTecle "ENTER" para voltar para o menu ') == "":
                     self.ver_lembrete()
                     break
                 else:
                     print('ERRO! Tecla errada')
-                    tracinho()
+                    Util.tracinho()

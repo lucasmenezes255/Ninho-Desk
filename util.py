@@ -1,18 +1,22 @@
 import os
 from time import sleep
 
-def limpar_tela():
-    if os.name == 'nt':
-        os.system('cls')
-    else:
-        os.system('clear')
+class Util: 
+    def __init__(self):
+        pass
+        
+    def limpar_tela():
+        if os.name == 'nt':
+            os.system('cls')
+        else:
+            os.system('clear')
 
-def tracinho():
-    print('-'*40)
+    def tracinho():
+        print('-'*40)
 
-def pausa():
-    sleep(2)
-    limpar_tela()
+    def pausa():
+        sleep(2)
+        Util.limpar_tela()
 
-def traco_igual():
-    print('='*40)
+    def traco_igual():
+        print('='*40)
