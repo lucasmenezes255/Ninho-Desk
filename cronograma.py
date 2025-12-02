@@ -16,23 +16,11 @@ class Cronograma(Lembrete):
     def __init__(self, email):
         self.email = email
 
-    def ver_cronograma(self):
-        while True:
-            Util.limpar_tela()
-            dados = carregar_tarefas(self.email)
-            if self.email not in dados:
-                Util.tracinho()
-                print('Nenhuma tarefa encontrada')
-                Util.tracinho()
-                while True:
-                    Util.tracinho()
-                    if input('\nTecle "ENTER" para voltar para o menu ') == "":
-                        from main import menu_estudante
-                        menu_estudante(self.email)
-                        return
-                    else:
-                        print('ERRO! Tecla errada')
-                        Util.tracinho()
+    def ver_cronograma_tarefas(self):
+        dados = carregar_tarefas(self.email)
+        if self.email not in dados:
+            return 0
+        else:
             tarefas_usuario = dados[self.email]
             tarefas = (
                 tarefas_usuario['Pendente']['ALTA']+
@@ -40,124 +28,30 @@ class Cronograma(Lembrete):
                 tarefas_usuario['Pendente']['BAIXA']+
                 tarefas_usuario['Pendente']['SEM PRIORIDADE']
             )
-            Util.tracinho()
-            print('Cronograma de tarefas\n')
-            if not tarefas:
-                print('Nenhuma tarefa adicionada')
+        if not tarefas:
+            return 1
+        else:
             tarefas_cronograma = sorted(
                 tarefas, key=lambda tarefa:datetime.strptime(tarefa['Data'], '%d/%m/%Y')
             )
-            for tarefa in tarefas_cronograma:
-                print(f"{tarefa['Data']}: {tarefa['Título']}")
-            Util.tracinho()
-            print('Cronograma de Estudos\n')
-            cronograma = carregar_cronograma()
-            if not self.email in cronograma:
-                print('Nenhum cronograma de estudos adicionado')
-                Util.tracinho()
-                while True:
-                    Util.tracinho()
-                    if input('\nTecle "ENTER" para voltar para o menu ') == "":
-                        from main import menu_estudante
-                        menu_estudante(self.email)
-                        return
-                    else:
-                        print('ERRO! Tecla errada')
-                        Util.tracinho()
-            else: 
-                lista = cronograma[self.email]
-                print(f"Segunda-Feira: {lista['Segunda-Feira']}\n"
-                    f"Terça-Feira: {lista['Terça-Feira']}\n" \
-                    f"Quarta-Feira: {lista['Quarta-Feira']}\n" \
-                    f"Quinta-Feira: {lista['Quinta-Feira']}\n" \
-                    f"Sexta-Feira: {lista['Sexta-Feira']}\n" \
-                    f"Sábado: {lista['Sábado']}\n" \
-                    f"Domingo: {lista['Domingo']}")
-                Util.tracinho()
-                print('[1] Lembretes\n[2] Sair\n')
-                escolha = input('Selecione uma opção: ')
-                if escolha == '1':
-                    Util.limpar_tela()
-                    print('Direcionando')
-                    for i in range(3):
-                        print('.')
-                        sleep(1)
-                    self.ver_lembrete()
-                    return
-                elif escolha == '2':
-                    Util.limpar_tela()
-                    from  main import menu_estudante
-                    menu_estudante(self.email)
-                    return
-                else:
-                    Util.tracinho()
-                    print ('Opção inválida! Tente novamente')
-                    sleep(1)
+            return tarefas_cronograma
+        
+    def ver_cronograma_estudos(self):
+        cronograma = carregar_cronograma()
+        if not self.email in cronograma:
+            return 0
+        else: 
+            lista = cronograma[self.email]
+            return lista
 
-    def organizar_cronograma(self):
-        while True:
-            Util.limpar_tela()
-            cronograma = carregar_cronograma()
-            print('='*40)
-            print(f'{" CRONOGRAMA ":^40}')
-            print('='*40)
-            print('[1] Ver Cronograma Existente\n'
-                '[2] Adicionar Cronograma\n'
-                '[3] Sair\n')
-            Util.tracinho()
-            escolha = input('Selecione uma opção: ').strip()
-            if escolha == '1':
-                Util.limpar_tela()
-                Util.tracinho()
-                if self.email not in cronograma:
-                    cronograma[self.email] = {}
-                    print('Cronograma inexistente')
-                    sleep(1)
-                else:
-                    lista = cronograma[self.email]
-                    print('Cronograma\n')
-                    print(f'Segunda-Feira: {lista["Segunda-Feira"]}\n'
-                        f'Terça-Feira: {lista["Terça-Feira"]}\n' \
-                        f'Quarta-Feira: {lista["Quarta-Feira"]}\n' \
-                        f'Quinta-Feira: {lista["Quinta-Feira"]}\n' \
-                        f'Sexta-Feira: {lista["Sexta-Feira"]}\n' \
-                        f'Sábado: {lista["Sábado"]}\n' \
-                        f'Domingo: {lista["Domingo"]}')
-                    Util.tracinho()
-                    while True:
-                        Util.tracinho()
-                        if input('\nTecle "ENTER" para voltar para o menu ') == "":
-                            self.organizar_cronograma()
-                            return
-                        else:
-                            print('ERRO! Tecla errada')
-                            Util.tracinho()
-            elif escolha == '2':
-                self.add_cronograma()
-            elif escolha == '3':
-                Util.limpar_tela()
-                print('Saindo')
-                for i in range(3):
-                    print('.')
-                    sleep(1)
-                Util.limpar_tela()
-                return
-            else:
-                Util.tracinho()
-                print ('Opção inválida! Tente novamente')
-                sleep(1)
-
-    def add_cronograma(self):
-        Util.limpar_tela()
-        Util.tracinho()
-        print('Adicionando cronograma\n')
-        segunda = input('Defina o que será estudado na Segunda-Feira: ')
-        terca = input('Defina o que será estudado na Terça-Feira: ')
-        quarta = input('Defina o que será estudado na Quarta-Feira: ')
-        quinta = input('Defina o que será estudado na Quinta-Feira: ')
-        sexta = input('Defina o que será estudado na Sexta-Feira: ')
-        sabado = input('Defina o que será estudado no Sábado: ')
-        domingo = input('Defina o que será estudado no Domingo: ')
+    def add_cronograma(self, lista_cronograma):
+        segunda = lista_cronograma[0]
+        terca = lista_cronograma[1]
+        quarta = lista_cronograma[2]
+        quinta = lista_cronograma[3]
+        sexta = lista_cronograma[4]
+        sabado = lista_cronograma[5]
+        domingo = lista_cronograma[6]
         cronograma = carregar_cronograma()
         if self.email not in cronograma:
             cronograma[self.email] = []
@@ -169,18 +63,7 @@ class Cronograma(Lembrete):
                             "Sábado": sabado, 
                             "Domingo": domingo}
         self.salvar_cronograma(cronograma)
-        Util.tracinho()
-        print('Cronograma adicionado com sucesso!')
-        Util.tracinho()
-        while True:
-            Util.tracinho()
-            if input('\nTecle "ENTER" para voltar para o menu ') == "":
-                self.organizar_cronograma()
-                return
-            else:
-                print('ERRO! Tecla errada')
-                Util.tracinho()
-
+    
     @staticmethod
     def salvar_cronograma(cronograma):
         with open('cronograma.json', 'w', encoding=  'utf-8') as arquivo:
