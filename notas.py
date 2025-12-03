@@ -1,9 +1,5 @@
-from util import Util
 import json
 import os
-from rich.table import Table
-from rich import box
-from rich.console import Console
 import re
 
 def carregar_notas(email):

@@ -1,7 +1,5 @@
-from util import Util
-from time import sleep
 from cadastro import carregar_dados, Usuario
-import maskpass
+
 class Verificacao(Usuario):
     def __init__(self, email, senha='', confirma_senha=''):
         self.email = email

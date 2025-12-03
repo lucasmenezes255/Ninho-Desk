@@ -1,8 +1,6 @@
 import json
 import os
 import re
-import maskpass
-from util import Util
 from tarefas import carregar_tarefas
 from lembretes import carregar_lembretes
 from cronograma import carregar_cronograma
@@ -107,33 +105,6 @@ class Usuario:
                 with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
                     json.dump(dados_usuarios, arquivo, indent=4, ensure_ascii=False)
         
-    
-    def redefinir_senha_master(self):
-        while True:
-            nova_senha = maskpass.askpass(prompt='Digite a senha mestre: ')
-            if nova_senha == '':
-                print('\nERRO: Senha não pode ser vazia!')
-            elif len(nova_senha) < 8:
-                print('\nERRO: Senha muito curta, deve ter pelo menos 8 caracteres')
-                Util.tracinho()
-            elif not re.search('[a-zA-Z]', nova_senha):
-                print('\nERRO: A senha não possui letras')
-                Util.tracinho()
-            elif not re.search('[0-9]', nova_senha):
-                print('\nERRO: A senha não possui números')
-                Util.tracinho()
-            else:
-                confirmacao = maskpass.askpass(prompt='Confirme sua senha: ')
-                if confirmacao != nova_senha:
-                    print('\nERRO: Senha digitada não correspode, tente novamente')
-                    Util.tracinho()
-                else:
-                    self.__senha_mestre = nova_senha
-                    dados_usuarios = carregar_dados()
-                    dados_usuarios[self.email]['Senha Mestre'] = self.__senha_mestre
-                    with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
-                        json.dump(dados_usuarios, arquivo, indent=4, ensure_ascii=False)
-                    break
 
     def mudar_email(self, novo_email):
         dados = carregar_dados()
@@ -223,17 +194,3 @@ class Usuario:
             del dados[self.email]
             with open('dados_usuarios.json', 'w', encoding='utf-8') as arquivo:
                 json.dump(dados, arquivo, indent=4, ensure_ascii=False)
-        
-    @staticmethod
-    def verificando_serie(serie):
-        while True:
-            if serie < 1 or serie > 9:
-                print('\nERRO: Série inválida!')
-                Util.tracinho()
-                try:
-                    serie = int(input('Digite a série da criança: '))
-                except:
-                    print('\nERRO: Informe uma série válida!')
-                    Util.tracinho()
-            else:
-                return serie

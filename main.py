@@ -120,16 +120,16 @@ class App(ctk.CTk):
             frame, text='Exibir senha', variable=self.var_senha, command=self.mostrar_senha)
         check_senha.pack(pady=10)
 
-        botao_login = ctk.CTkButton(frame, width=200, height=50, text='ESQUECEU A SENHA', font=(
-            'Roboto', 15), command=self.esqueceu_senha)
+        # Botão de login
+        botao_login = ctk.CTkButton(frame, width=200, height=50, text='LOGIN', font=(
+            'Roboto', 15), command=self.verificacoes)
         botao_login.pack(pady=30)
 
         frame_botao = ctk.CTkFrame(frame, fg_color="transparent")
         frame_botao.pack(pady=10)
-        # Botão de login
-        botao_login = ctk.CTkButton(frame_botao, width=200, height=50, text='LOGIN', font=(
-            'Roboto', 15), command=self.verificacoes)
-        botao_login.pack(side='left', padx=50)
+        botao_esqueceu_senha = ctk.CTkButton(frame_botao, width=200, height=50, text='ESQUECEU A SENHA', font=(
+            'Roboto', 15), command=self.esqueceu_senha)
+        botao_esqueceu_senha.pack(side='left', padx=50)
 
         # Botão para voltar para a tela inicial
         botao_voltar = ctk.CTkButton(frame_botao, width=200, height=50, text='VOLTAR', font=(
@@ -446,7 +446,7 @@ class App(ctk.CTk):
         botao_confirmar.pack(pady=20)
 
         botao_voltar = ctk.CTkButton(frame, width=200, height=50, text='VOLTAR', font=(
-            'Roboto', 15), command=self.cadastrar_usuario_pt2)
+            'Roboto', 15), command=lambda: self.cadastrar_usuario_pt2(nome, email, serie))
         botao_voltar.pack()
 
         self.label_confirma = ctk.CTkLabel(
@@ -1500,7 +1500,7 @@ class App(ctk.CTk):
         botao_apagar_perfil.pack(pady=10)
 
         botao_voltar = ctk.CTkButton(frame, width=200, height=50, text='VOLTAR', font=(
-            'Roboto', 15), command=self.login)
+            'Roboto', 15), command=lambda: self.menu_principal(email))
         botao_voltar.pack(pady=10)
         self.trocar_tela(frame)
 

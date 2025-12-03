@@ -1,7 +1,5 @@
 from tarefas import carregar_tarefas
 from datetime import datetime
-from util import Util
-from time import sleep
 from lembretes import Lembrete
 import json
 import os
