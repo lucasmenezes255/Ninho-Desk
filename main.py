@@ -62,9 +62,11 @@ class App(ctk.CTk):
 
         tabela_notas.pack(pady=20)
         chaves = list(notas_email)
+        titulos_disciplina = ['PORTUGUÊS','MATEMÁTICA', 'HISTÓRIA', 'GEOGRAFIA', 'CIÊNCIAS',
+                              'EDUCAÇÃO FÍSICA', 'INGLÊS', 'ESPANHOL', 'ARTES', 'FILOSOFIA']
         for indice in range(len(chaves)):
             tabela_notas.insert("", "end", values=(
-                f'{indice+1}', f'{chaves[indice]}', *
+                f'{indice+1}', f'{titulos_disciplina[indice]}', *
                 notas_email[chaves[indice]]['Nota1'],
                 *notas_email[chaves[indice]]['Nota2'],
                 round((float(notas_email[chaves[indice]]['Nota1'][0]) + float(notas_email[chaves[indice]]['Nota2'][0]))/2, 1)))
@@ -293,8 +295,17 @@ class App(ctk.CTk):
         resultado_email = usuario.validar_email()
         resultado_serie = usuario.validar_serie()
         erros = []
-        if not resultado_nome:
-            erros.append('Nome de usuário incorreto')
+        if resultado_nome == 1:
+            erros.append('Nome de usuário muito grande. Limite de 30 caracteres atingido')
+            self.campo_nome.delete(0, 'end')
+        elif resultado_nome == 2:
+            erros.append('Nome de usuário vazio')
+            self.campo_nome.delete(0, 'end')
+        elif resultado_nome == 3:
+            erros.append('Caracteres especiais não permitidos')
+            self.campo_nome.delete(0, 'end')
+        elif resultado_nome == 4:
+            erros.append('Não é permitido números no início do nome')
             self.campo_nome.delete(0, 'end')
 
         if resultado_email == 1:
@@ -855,8 +866,8 @@ class App(ctk.CTk):
                 tabela_lembrete.insert("", "end", values=(lembretes[indice]['Título'], lembretes[indice]['Descrição']))
             scrollbar_horizontal = ttk.Scrollbar(
             frame_lembrete, orient='horizontal', command=tabela_lembrete.xview)
-        scrollbar_horizontal.pack(side='bottom', fill='x')
-        tabela_lembrete.pack(fill='both')
+            scrollbar_horizontal.pack(side='bottom', fill='x')
+            tabela_lembrete.pack(fill='both')
         botao_voltar = ctk.CTkButton(frame, width=200, height=50, text='VOLTAR', font=(
             'Roboto', 15), command=lambda: self.ver_lembretes(email))
         botao_voltar.pack(pady=10)

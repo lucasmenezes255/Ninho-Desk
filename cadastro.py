@@ -26,17 +26,17 @@ class Usuario:
 
     def validar_nome(self):
         if len(self.nome) >= 30:
-            return False
+            return 1
         if self.nome == '' or ' ' in self.nome[0]:
-            return False
+            return 2
         elif self.nome[0] in '_-@!#%&*{[]}().':
-            return False
+            return 3
         elif '@#$%&*({[]})' in self.nome:
-            return False
+            return 3
         elif self.nome[0] in '0123456789':
-            return False
+            return 4
         else:
-            return True
+            return 5
 
     def validar_email(self):
         dados = carregar_dados()
