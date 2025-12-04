@@ -51,7 +51,7 @@ Orientado por: [Cleyton Magalhães](https://github.com/cvanut)
 - Visualizar grade de notas
 #### **RF013** Agrupamento de Tarefas  
 - Divisão de tarefas por conclusão ou pendência
-- Divisão de tarefas por grua de prioridade
+- Divisão de tarefas por grupo de prioridade
 #### **RF014** Interface Gráfica
 - Interface responsiva contendo todos os outros requisitos
 
